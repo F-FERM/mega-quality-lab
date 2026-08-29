@@ -19,8 +19,8 @@ function Navbar() {
 
   return (
     <nav
-      className="sticky top-0 z-50 w-full backdrop-blur-md"
-      style={{ background: "rgba(0, 0, 0, 0.2)" }}
+      className="sticky top-0 z-50 w-full backdrop-blur-md bg-[#00000033]"
+    //   style={{ background: "rgba(0, 0, 0, 0.2)" }}
     >
       <div
         className="mx-auto flex w-full max-w-[1920px] items-center justify-between
