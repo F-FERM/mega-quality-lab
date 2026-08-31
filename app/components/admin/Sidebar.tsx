@@ -49,13 +49,12 @@ const data = {
       title: "Home",
       icon: Home,
       items: [
-        { title: "Hero Slides", url: "/admin/dashboard/home/hero-slides/" },
-        { title: "Stats", url: "/admin/dashboard/home/stats/" },
-        { title: "Home services", url: "/admin/dashboard/home/home-services/" },
-        { title: "Home About-Milestones", url: "/admin/dashboard/home/about-us-milestone/" },
-        { title: "Home Contact Client", url: "/admin/dashboard/home/contact-clients/" },
-        { title: "Home Works", url: "/admin/dashboard/home/home-works/" },
-        { title: "Why choose us -Team", url: "/admin/dashboard/home/why-choose-us/" },
+        { title: "Hero", url: "/admin/dashboard/home/hero" },
+                { title: "About", url: "/admin/dashboard/home/about" },
+                {title:"Geotechnical",url:"/admin/dashboard/home/geotechnical"},
+                {title:"Testing",url:"/admin/dashboard/home/testing"}
+
+     
 
       ],
     },
