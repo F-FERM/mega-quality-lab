@@ -304,7 +304,7 @@ function NonDestructiveTesting() {
                 {/* Image */}
                 <div className="relative h-[180px] sm:h-[195px] md:h-[205px] xl:h-[210px] w-full shrink-0 overflow-hidden transition-all duration-500 ease-out group-hover:h-[200px] sm:group-hover:h-[215px] md:group-hover:h-[228px] xl:group-hover:h-[235px]">
                   <Image
-                    src={resolveImage(module.image, index)}
+                    src={(module.image)}
                     alt={module.title}
                     fill
                     className="object-cover"
