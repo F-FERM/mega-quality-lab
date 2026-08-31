@@ -1,7 +1,7 @@
-import AboutLabSecondary from "@/components/about/HeroAbout";
-import EhsSection from "@/components/home/EhsSection";
-import ManagementSection from "@/components/home/ManagementSection";
-import Footer from "@/components/layout/Footer";
+import AboutLabSecondary from "@/app/components/about/HeroAbout";
+import EhsSection from "@/app/components/home/EhsSection";
+import ManagementSection from "@/app/components/home/ManagementSection";
+import Footer from "@/app/components/layout/Footer";
 export default function AboutPage() {
   return (
     <main>

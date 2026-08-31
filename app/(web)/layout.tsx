@@ -1,4 +1,5 @@
-import Navbar from "@/components/layout/Navbar";
+import Navbar from "@/app/components/layout/Navbar";
+import Footer from "../components/layout/Footer";
 
 
 export default function WebLayout({
@@ -12,7 +13,7 @@ export default function WebLayout({
       
       />
       <div className="w-full">{children}</div>
-      {/* <FooterDarkSection /> */}
+      <Footer/>
     </>
   );
 }

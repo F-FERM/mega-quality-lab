@@ -1,17 +1,17 @@
-import AboutLab from "@/components/home/AboutLab";
-import GeotechnicalHero from "@/components/home/GeoTechnicalHero";
-import GetInTouch from "@/components/home/GetInTouch";
-import Hero from "@/components/home/Hero";
-import MaterialTesting from "@/components/home/MaterialTesting";
-import NonDestructiveTesting from "@/components/home/NonDestructiveTesting";
-import QualitySystem from "@/components/home/QualitySystem";
-import QualityVerify from "@/components/home/QualityVerify";
-import TestingProcess from "@/components/home/TestingProcess";
-import WhatWeTest from "@/components/home/WhatWeTest";
-import WhyMega from "@/components/home/WhyMega";
-import Footer from "@/components/layout/Footer";
-import EhsSection from "@/components/home/EhsSection";
-import ManagementSection from "@/components/home/ManagementSection";
+import AboutLab from "@/app/components/home/AboutLab";
+import GeotechnicalHero from "@/app/components/home/GeoTechnicalHero";
+import GetInTouch from "@/app/components/home/GetInTouch";
+import Hero from "@/app/components/home/Hero";
+import MaterialTesting from "@/app/components/home/MaterialTesting";
+import NonDestructiveTesting from "@/app/components/home/NonDestructiveTesting";
+import QualitySystem from "@/app/components/home/QualitySystem";
+import QualityVerify from "@/app/components/home/QualityVerify";
+import TestingProcess from "@/app/components/home/TestingProcess";
+import WhatWeTest from "@/app/components/home/WhatWeTest";
+import WhyMega from "@/app/components/home/WhyMega";
+import Footer from "@/app/components/layout/Footer";
+import EhsSection from "@/app/components/home/EhsSection";
+import ManagementSection from "@/app/components/home/ManagementSection";
 export default function HomePage() {
   return (
     <main>
