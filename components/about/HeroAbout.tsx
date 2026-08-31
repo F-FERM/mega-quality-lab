@@ -5,7 +5,7 @@ import ABOUT_IMG from "../../public/images/lab1.jpg";
 
 function AboutLabSecondary() {
   return (
-    <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
+    <section className="w-full bg-white px-4 pb-16 pt-[100px] sm:px-6 sm:pb-20 sm:pt-[130px] md:pb-24 md:pt-[150px] xl:pb-28 xl:pt-[250px]">
       <div
         className="mx-auto grid w-full max-w-[1464px] grid-cols-1 items-center lg:grid-cols-2"
         style={{ gap: "20px" }}
@@ -74,17 +74,30 @@ function AboutLabSecondary() {
         {/* =====================================================
             RIGHT — Image
         ====================================================== */}
-        <div className="relative w-full">
-          <div className="relative aspect-[930/610] w-full overflow-hidden rounded-[24px]">
-            <Image
-              src={ABOUT_IMG}
-              alt="Reviewing construction blueprints on site"
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 90vw, 50vw"
-            />
-          </div>
-        </div>
+       <div
+  className="relative w-full"
+  style={{
+    maxWidth: "721px",
+    padding: "10px",
+    gap: "10px",
+  }}
+>
+  <div
+    className="relative w-full overflow-hidden"
+    style={{
+      aspectRatio: "701 / 550",
+      borderRadius: "30px",
+    }}
+  >
+    <Image
+      src={ABOUT_IMG}
+      alt="Reviewing construction blueprints on site"
+      fill
+      className="object-cover"
+      sizes="(max-width: 1024px) 90vw, 50vw"
+    />
+  </div>
+</div>
       </div>
     </section>
   );

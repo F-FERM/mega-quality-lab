@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import BANNER_BG from "../../public/images/servicehero.jpg";
+import BANNER_BG from "../../public/images/certificationbanner.jpg";
 
-function WhatWeTestBanner() {
+function CertificationBanner() {
   return (
     <section className="relative w-full overflow-hidden">
       {/* Background image fills the full section */}
@@ -34,7 +34,7 @@ function WhatWeTestBanner() {
         <div className="flex w-full max-w-[963px] flex-col items-center text-center">
           {/* Eyebrow */}
           <div className="mb-6 flex items-center gap-3">
-            <span className="h-px w-8 bg-[#67003E]" />
+            <span className="h-px w-12 bg-[#67003E]" />
             <span
               className="font-poppins font-normal capitalize"
               style={{
@@ -44,7 +44,7 @@ function WhatWeTestBanner() {
                 color: "#67003E",
               }}
             >
-              What We Test
+              Accreditation & Certification
             </span>
             <span className="h-px w-8 bg-[#67003E]" />
           </div>
@@ -61,8 +61,8 @@ function WhatWeTestBanner() {
               textAlign: "center",
             }}
           >
-            Our Testing & Investigation{" "}
-            <span className="text-[#FFA8D9]">Services</span>
+            Proven <span className="text-[#FFA8D9]">quality</span>. Recognized
+            standards.
           </h2>
 
           {/* Sub copy */}
@@ -76,9 +76,9 @@ function WhatWeTestBanner() {
               textAlign: "center",
             }}
           >
-            Six Core Disciplines Covering The Full Lifecycle Of
-            Construction Materials — From Raw Aggregate To Finished
-            Structure.
+            Mega Quality Laboratory operates within recognized accreditation
+            and registration frameworks, supporting confidence in the
+            competence, integrity and quality of its testing activities
           </p>
         </div>
       </div>
@@ -86,4 +86,4 @@ function WhatWeTestBanner() {
   );
 }
 
-export default WhatWeTestBanner;
+export default CertificationBanner;
