@@ -25,19 +25,22 @@ const buttonVariants = cva(
 
         create:
           "bg-primary hover:bg-primary/50 text-white px-10 h-11 rounded-lg font-medium text-base min-w-[100px] cursor-pointer",
-        navbarCta:
-          "w-full h-11 px-5 text-sm " +
-          "sm:w-auto sm:h-12 sm:px-7 sm:text-base " +
-          "md:h-[52px] md:px-8 md:text-lg " +
-          "lg:h-14 lg:px-9 lg:text-xl " +
-          "xl:w-[275px] xl:h-[60px] xl:pt-[15px] xl:pr-[42px] xl:pb-4 xl:pl-[42px] xl:text-[22px] " +
-          "gap-[10px] rounded-[20px] bg-[#67003E] text-white font-poppins font-medium uppercase text-center leading-[120%] tracking-[0px] hover:opacity-90 cursor-pointer",
-        heroCta:     "w-full h-11 px-5 text-sm " +
-          "sm:w-auto sm:h-12 sm:px-7 sm:text-base " +
-          "md:h-[52px] md:px-8 md:text-lg " +
-          "lg:h-14 lg:px-9 lg:text-xl " +
-          "xl:w-[275px] xl:h-[60px] xl:pt-[15px] xl:pr-[42px] xl:pb-4 xl:pl-[42px] xl:text-[22px] " +
-          "gap-[10px] rounded-[20px] bg-transparent border-2 border-white text-white font-poppins font-medium uppercase text-center leading-[120%] tracking-[0px] hover:opacity-90 cursor-pointer",
+navbarCta:
+  "w-full h-11 px-5 text-sm " +
+  "sm:w-auto sm:h-12 sm:px-7 sm:text-base " +
+  "md:h-[52px] md:px-8 md:text-lg " +
+  "lg:h-14 lg:px-9 lg:text-xl " +
+  "xl:w-[275px] xl:h-[60px] xl:pt-[15px] xl:pr-[42px] xl:pb-4 xl:pl-[42px] xl:text-[22px] " +
+  "gap-[10px] rounded-[20px] bg-[#67003E] text-white font-poppins font-medium uppercase text-center leading-[120%] tracking-[0px] " +
+  "transition-colors duration-200 hover:bg-[#4A002C] cursor-pointer",
+heroCta:
+  "w-full h-11 px-5 text-sm " +
+  "sm:w-auto sm:h-12 sm:px-7 sm:text-base " +
+  "md:h-[52px] md:px-8 md:text-lg " +
+  "lg:h-14 lg:px-9 lg:text-xl " +
+  "xl:w-[275px] xl:h-[60px] xl:pt-[15px] xl:pr-[42px] xl:pb-4 xl:pl-[42px] xl:text-[22px] " +
+  "gap-[10px] rounded-[20px] bg-transparent border-2 border-white text-white font-poppins font-medium uppercase text-center leading-[120%] tracking-[0px] " +
+  "transition-colors duration-200 hover:bg-white/25 cursor-pointer",
         deletecancel:
           "w-[138px] h-[42px]  py-8 opacity-100 rounded-[5px] p-[10px] gap-[8px] border border-[#3D3E46] text-base bg-white",
         delete:

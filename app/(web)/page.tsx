@@ -22,10 +22,11 @@ export default function HomePage() {
       <NonDestructiveTesting/>
       <MaterialTesting/>
       <QualitySystem/>
+       <EhsSection/>
+      <ManagementSection/>
       <TestingProcess/>
       <WhyMega/>
-      <EhsSection/>
-      <ManagementSection/>
+     
       <GetInTouch/>
    
     </main>

@@ -132,7 +132,7 @@ function AboutLab() {
     const fetchAboutData = async () => {
       try {
         const res = await api.get("/home-about");
-        
+
         if (res.data && typeof res.data === "object") {
           // Map API response to component data
           const aboutData: AboutData = {
@@ -156,7 +156,7 @@ function AboutLab() {
               .sort((a: StatItem, b: StatItem) => (a.order || 0) - (b.order || 0)),
             isActive: res.data.isActive ?? true,
           };
-          
+
           setData(aboutData);
         }
       } catch (err) {
@@ -214,9 +214,10 @@ function AboutLab() {
           xl:gap-9
         "
       >
-        {/* LEFT — IMAGE COLLAGE */}
+        {/* LEFT — IMAGE COLLAGE — one shared hover zone for both images */}
         <div
           className="
+            group
             relative
             mx-auto
             w-full
@@ -232,7 +233,7 @@ function AboutLab() {
               alt={imageOneAlt || "Laboratory testing equipment"}
               fill
               priority
-              className="object-cover"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
               sizes="(max-width: 1024px) 90vw, 737px"
               unoptimized={typeof imageOneSrc === 'string' && imageOneSrc.startsWith('http')}
             />
@@ -256,12 +257,12 @@ function AboutLab() {
               border-white
             "
           >
-            <div className="relative aspect-[455/368] w-full">
+            <div className="relative aspect-[455/368] w-full overflow-hidden">
               <Image
                 src={imageTwoSrc}
                 alt={imageTwoAlt || "Field technician collecting a soil sample"}
                 fill
-                className="object-cover object-center"
+                className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110"
                 sizes="(max-width: 1024px) 55vw, 455px"
                 unoptimized={typeof imageTwoSrc === 'string' && imageTwoSrc.startsWith('http')}
               />

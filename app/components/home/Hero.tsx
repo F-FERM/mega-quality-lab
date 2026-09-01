@@ -184,7 +184,13 @@ export default function Hero() {
     const fetchHero = async () => {
       try {
         const res = await api.get<HeroData>("home");
-        setData(res.data);
+        // Guard against the API returning an empty/missing heroImage,
+        // which would otherwise crash next/image (invalid src="")
+        setData({
+          ...defaultData,
+          ...res.data,
+          heroImage: res.data?.heroImage?.trim() ? res.data.heroImage : defaultData.heroImage,
+        });
       } catch (err) {
         console.error("Failed to fetch hero section:", err);
         setData(defaultData);
@@ -231,6 +237,7 @@ export default function Hero() {
         alt="Construction site rebar and formwork under inspection"
         fill
         priority
+        sizes="100vw"
         className="object-cover object-top"
       />
 
@@ -291,12 +298,7 @@ export default function Hero() {
           xl:translate-x-0
           xl:p-4
         "
-        style={{
-          borderRadius: "9999px",
-          borderWidth: "2px",
-          borderStyle: "dashed",
-          borderColor: "#FFD400",
-        }}
+     
       >
         <Image
           src={ACCREDITED_BADGE}

@@ -319,9 +319,9 @@ function GeotechnicalHero() {
                   key={service}
                   type="button"
                   className="
-                    group flex items-center justify-center rounded-[40px] border border-[#BABABA]
+                    group flex items-center justify-center rounded-[40px] border-2 hover:border-4 border-[#BABABA]
                     text-center transition-all duration-300
-                    hover:border-[#FC0198] hover:bg-gray-600
+                    hover:border-[#FC0198] 
                     w-full h-[52px] px-5 gap-[10px]
                     sm:w-[334px] sm:h-[68px] sm:px-8
                   "

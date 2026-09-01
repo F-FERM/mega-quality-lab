@@ -50,34 +50,32 @@ const data = {
       icon: Home,
       items: [
         { title: "Hero", url: "/admin/dashboard/home/hero" },
-                { title: "About", url: "/admin/dashboard/home/about" },
-                {title:"Geotechnical",url:"/admin/dashboard/home/geotechnical"},
-                {title:"Testing",url:"/admin/dashboard/home/testing"}
+        { title: "About", url: "/admin/dashboard/home/about" },
+        { title: "Geotechnical", url: "/admin/dashboard/home/geotechnical" },
+        { title: "Testing", url: "/admin/dashboard/home/testing" },
+        { title: "Quality-EHS", url: "/admin/dashboard/home/quality-ehs" },
 
-     
+        { title: "Management", url: "/admin/dashboard/home/management" },
+
+        { title: "WhyMegaGetInTouch", url: "/admin/dashboard/home/whymegagetintouch" },
+        { title: "Services", url: "/admin/dashboard/home/services" },
+
+
+
 
       ],
     },
-    {
-      title: "About",
-      icon: Info,
-      items: [
-        { title: "About Section", url: "/admin/dashboard/about/about-hero-section/" },
-        { title: "Full Section", url: "/admin/dashboard/about/about-full-section/" },
-      ],
-    },
-    {
-      title: "Service",
-      icon: BriefcaseBusiness,
-      items: [
 
-        { title: "Services", url: "/admin/dashboard/services/" },
-      ],
-    },
     {
-      title: "Blog",
+      title: "Projects",
       icon: Rss,
-      items: [{ title: "Blog", url: "/admin/dashboard/blog-section/" }],
+      items: [{ title: "Projects", url: "/admin/dashboard/projects/" }],
+    },
+    {
+      title: "Certification",
+      icon: Rss,
+      items: [{ title: "HeroCertificate", url: "/admin/dashboard/certification/hero-certificate" },
+        { title: "Certificates", url: "/admin/dashboard/certification/certificates" },],
     },
     {
       title: "Contact Page",

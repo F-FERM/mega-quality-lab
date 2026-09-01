@@ -551,7 +551,7 @@ export default function TestingHeroAdminPage() {
       setSubmitting(true);
 
       if (editingId) {
-        await api.patch(`${ENDPOINT}/${editingId}`, payload);
+        await api.patch(`${ENDPOINT}`, payload);
         toast.success("Testing hero section updated");
       } else {
         await api.post(ENDPOINT, payload);
@@ -579,7 +579,7 @@ export default function TestingHeroAdminPage() {
   const toggleActive = async (entry: TestingHero) => {
     try {
       setTogglingId(entry._id);
-      await api.patch(`${ENDPOINT}/${entry._id}`, {
+      await api.patch(`${ENDPOINT}`, {
         isActive: !entry.isActive,
       });
       setEntries((prev) =>

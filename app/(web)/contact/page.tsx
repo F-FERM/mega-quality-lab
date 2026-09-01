@@ -10,7 +10,7 @@ export default function ContactPage() {
     <main>
       <ContactSection />
      <ProjectEnquirySection/>
-      <Footer/>
+      
     </main>
   );
 }

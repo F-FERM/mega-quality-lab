@@ -70,6 +70,7 @@ interface AboutLaboratoryPayload {
   heroTitle: string;
   heroTitleTwo: string;
   heroTitleThree: string;
+  aboutImage: string;
   imageOne: string;
   imageOneAlt: string;
   imageTwo: string;
@@ -147,6 +148,7 @@ const EMPTY_ABOUT: AboutLaboratoryPayload = {
   heroTitle: "",
   heroTitleTwo: "",
   heroTitleThree: "",
+  aboutImage: "",
   imageOne: "",
   imageOneAlt: "",
   imageTwo: "",
@@ -258,6 +260,7 @@ function mapAboutToForm(entry: AboutLaboratory): AboutLaboratoryPayload {
     heroTitle: entry.heroTitle || "",
     heroTitleTwo: entry.heroTitleTwo || "",
     heroTitleThree: entry.heroTitleThree || "",
+    aboutImage: entry.aboutImage || "",
     imageOne: entry.imageOne || "",
     imageOneAlt: entry.imageOneAlt || "",
     imageTwo: entry.imageTwo || "",
@@ -488,12 +491,14 @@ export default function TestingHeroAdminPage() {
   const [aboutSubmitting, setAboutSubmitting] = useState(false);
   const [aboutTogglingId, setAboutTogglingId] = useState<string | null>(null);
   const [uploadingAboutImage, setUploadingAboutImage] = useState(false);
+  const [uploadingAboutImageOne, setUploadingAboutImageOne] = useState(false);
   const [uploadingAboutImageTwo, setUploadingAboutImageTwo] = useState(false);
   const [showStatForm, setShowStatForm] = useState(false);
   const [statDraft, setStatDraft] = useState<StatItem>(EMPTY_STAT);
   const [editingStatIndex, setEditingStatIndex] = useState<number | null>(null);
 
   const heroImageInputRef = useRef<HTMLInputElement>(null);
+  const aboutImageInputRef = useRef<HTMLInputElement>(null);
   const aboutImageOneInputRef = useRef<HTMLInputElement>(null);
   const aboutImageTwoInputRef = useRef<HTMLInputElement>(null);
 
@@ -516,8 +521,15 @@ export default function TestingHeroAdminPage() {
       setAboutLoading(true);
       const res = await api.get(ABOUT_ENDPOINT);
       if (res.data && typeof res.data === "object") {
-        setAboutData(res.data as AboutLaboratory);
-        setAboutForm(mapAboutToForm(res.data as AboutLaboratory));
+        // Check if response is array or single object
+        let responseData = res.data;
+        if (Array.isArray(responseData) && responseData.length > 0) {
+          responseData = responseData[0];
+        } else if (responseData.about && Array.isArray(responseData.about) && responseData.about.length > 0) {
+          responseData = responseData.about[0];
+        }
+        setAboutData(responseData as AboutLaboratory);
+        setAboutForm(mapAboutToForm(responseData as AboutLaboratory));
       }
     } catch (err) {
       console.error("Failed to fetch about laboratory:", err);
@@ -569,7 +581,7 @@ export default function TestingHeroAdminPage() {
   };
 
   const closeAboutModal = () => {
-    if (aboutSubmitting || uploadingAboutImage || uploadingAboutImageTwo) return;
+    if (aboutSubmitting || uploadingAboutImage || uploadingAboutImageOne || uploadingAboutImageTwo) return;
     setAboutModalOpen(false);
     setShowStatForm(false);
     setEditingStatIndex(null);
@@ -599,7 +611,7 @@ export default function TestingHeroAdminPage() {
 
   // ---------- ABOUT IMAGES ----------
 
-  const handleAboutImageOneUpload = async (
+  const handleAboutImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
@@ -608,12 +620,31 @@ export default function TestingHeroAdminPage() {
     try {
       setUploadingAboutImage(true);
       const result = await fileUpload(file);
+      setAboutForm((prev) => ({ ...prev, aboutImage: result.url }));
+      toast.success("About image uploaded");
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Failed to upload about image"));
+    } finally {
+      setUploadingAboutImage(false);
+      if (aboutImageInputRef.current) aboutImageInputRef.current.value = "";
+    }
+  };
+
+  const handleAboutImageOneUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingAboutImageOne(true);
+      const result = await fileUpload(file);
       setAboutForm((prev) => ({ ...prev, imageOne: result.url }));
       toast.success("Image one uploaded");
     } catch (err) {
       toast.error(getErrorMessage(err, "Failed to upload image one"));
     } finally {
-      setUploadingAboutImage(false);
+      setUploadingAboutImageOne(false);
       if (aboutImageOneInputRef.current) aboutImageOneInputRef.current.value = "";
     }
   };
@@ -954,6 +985,21 @@ export default function TestingHeroAdminPage() {
           </div>
         ) : aboutData ? (
           <Card className="overflow-hidden rounded-[18px] border border-white/60 bg-white/80 shadow-[0_10px_40px_rgba(0,0,0,0.06)] sm:rounded-[22px]">
+            <div className="relative h-[140px] w-full overflow-hidden bg-[#E8D5E0] sm:h-[160px]">
+              {aboutData.aboutImage ? (
+                <Image
+                  src={resolveImage(aboutData.aboutImage)}
+                  alt={aboutData.sectionTitle || "About Laboratory"}
+                  fill
+                  unoptimized
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <ImageIcon className="h-[26px] w-[26px] text-[#67003E]/40" />
+                </div>
+              )}
+            </div>
             <CardContent className="p-[16px] sm:p-[20px]">
               <div className="flex items-center justify-between">
                 <div>
@@ -1185,6 +1231,45 @@ export default function TestingHeroAdminPage() {
                   description="Text within the hero title that will become clickable."
                 />
 
+                {/* ABOUT IMAGE */}
+                <div className="rounded-[14px] border border-[#D4B8A8] bg-[#F8F0F5] p-[14px] sm:p-[16px]">
+                  <Label className="mb-[8px] flex items-center gap-[6px] text-[13px] font-medium text-[#2A2A2A]">
+                    <ImagePlus className="h-[13px] w-[13px]" /> About Image (Main)
+                  </Label>
+                  {aboutForm.aboutImage && (
+                    <div className="relative mb-[10px] h-[140px] w-full overflow-hidden rounded-[12px] bg-[#E8D5E0] sm:h-[160px]">
+                      <Image
+                        src={resolveImage(aboutForm.aboutImage)}
+                        alt="About image preview"
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <input
+                    ref={aboutImageInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAboutImageUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => aboutImageInputRef.current?.click()}
+                    disabled={uploadingAboutImage}
+                    className="h-[44px] w-full gap-[8px] rounded-[12px] border-[#D4B8A8] bg-white text-[13px] font-medium text-[#67003E] hover:bg-[#F8F0F5] hover:text-[#67003E] sm:w-auto sm:px-[16px]"
+                  >
+                    {uploadingAboutImage ? (
+                      <Loader2 className="h-[14px] w-[14px] animate-spin" />
+                    ) : (
+                      <UploadCloud className="h-[14px] w-[14px]" />
+                    )}
+                    {aboutForm.aboutImage ? "Replace About Image" : "Upload About Image"}
+                  </Button>
+                </div>
+
                 {/* Description */}
                 <div>
                   <Label className="mb-[8px] block text-[13px] font-medium text-[#2A2A2A]">
@@ -1239,7 +1324,7 @@ export default function TestingHeroAdminPage() {
                   />
                 </div>
 
-                {/* Images */}
+                {/* Images One & Two */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="rounded-[14px] border border-[#D4B8A8] bg-[#F8F0F5] p-[14px] sm:p-[16px]">
                     <Label className="mb-[8px] flex items-center gap-[6px] text-[13px] font-medium text-[#2A2A2A]">
@@ -1273,10 +1358,10 @@ export default function TestingHeroAdminPage() {
                       type="button"
                       variant="outline"
                       onClick={() => aboutImageOneInputRef.current?.click()}
-                      disabled={uploadingAboutImage}
+                      disabled={uploadingAboutImageOne}
                       className="h-[44px] w-full gap-[8px] rounded-[12px] border-[#D4B8A8] bg-white text-[13px] font-medium text-[#67003E] hover:bg-[#F8F0F5] hover:text-[#67003E]"
                     >
-                      {uploadingAboutImage ? (
+                      {uploadingAboutImageOne ? (
                         <Loader2 className="h-[14px] w-[14px] animate-spin" />
                       ) : (
                         <UploadCloud className="h-[14px] w-[14px]" />
@@ -1471,7 +1556,7 @@ export default function TestingHeroAdminPage() {
                   <Button
                     type="button"
                     onClick={handleAboutSubmit}
-                    disabled={aboutSubmitting || uploadingAboutImage || uploadingAboutImageTwo}
+                    disabled={aboutSubmitting || uploadingAboutImage || uploadingAboutImageOne || uploadingAboutImageTwo}
                     className="h-[46px] rounded-[12px] bg-[#67003E] px-[22px] text-[14px] font-medium text-white hover:bg-[#4F0030]"
                   >
                     {aboutSubmitting ? (

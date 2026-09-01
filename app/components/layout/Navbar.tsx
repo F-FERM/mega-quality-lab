@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import LOGO from "../../../public/images/Logo.png"
 import { Button } from "../common/Button";
@@ -14,8 +15,15 @@ const NAV_LINKS = [
 ];
 
 function Navbar() {
-  const [activeLink, setActiveLink] = useState("Home");
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+    return pathname?.startsWith(href);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 w-full backdrop-blur-md bg-[#00000033]">
@@ -47,13 +55,12 @@ function Navbar() {
             <li key={link.label}>
               <a
                 href={link.href}
-                onClick={() => setActiveLink(link.label)}
                 className="whitespace-nowrap font-poppins transition-colors duration-200 text-sm 2xl:text-base"
                 style={{
                   fontWeight: 500,
                   lineHeight: "100%",
                   letterSpacing: "0%",
-                  color: activeLink === link.label ? "#FC0198" : "#EBEBEB",
+                  color: isActive(link.href) ? "#FC0198" : "#EBEBEB",
                 }}
               >
                 {link.label}
@@ -108,7 +115,6 @@ function Navbar() {
               key={link.label}
               href={link.href}
               onClick={() => {
-                setActiveLink(link.label);
                 setMobileOpen(false);
               }}
               className="font-poppins text-base"
@@ -116,7 +122,7 @@ function Navbar() {
                 fontWeight: 500,
                 lineHeight: "100%",
                 letterSpacing: "0%",
-                color: activeLink === link.label ? "#EBEBEB" : "#FC0198",
+                color: isActive(link.href) ? "#FC0198" : "#EBEBEB",
               }}
             >
               {link.label}

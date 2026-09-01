@@ -10,7 +10,7 @@ export default function CertificationPage() {
       <CertificationCard/>
      <AccreditationSection/>
      <RegistrationSection/>
-      <Footer/>
+     
     </main>
   );
 }

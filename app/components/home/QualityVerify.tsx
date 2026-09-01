@@ -105,15 +105,15 @@ function QualityVerify() {
     const fetchQualityData = async () => {
       try {
         const res = await api.get("/home");
-        
+
         // Handle different response formats
         let qualityData: QualityData | null = null;
-        
+
         if (Array.isArray(res.data) && res.data.length > 0) {
           // Find active hero or get first one
           const activeHero = res.data.find((item: any) => item.isActive);
           const heroData = activeHero || res.data[0];
-          
+
           qualityData = {
             qualityTitle: heroData.qualityTitle || defaultData.qualityTitle,
             qualityTitleTwo: heroData.qualityTitleTwo || defaultData.qualityTitleTwo,
@@ -130,7 +130,7 @@ function QualityVerify() {
         } else if (res.data && typeof res.data === "object" && res.data.testingHeroes && Array.isArray(res.data.testingHeroes)) {
           const activeHero = res.data.testingHeroes.find((item: any) => item.isActive);
           const heroData = activeHero || res.data.testingHeroes[0];
-          
+
           qualityData = {
             qualityTitle: heroData.qualityTitle || defaultData.qualityTitle,
             qualityTitleTwo: heroData.qualityTitleTwo || defaultData.qualityTitleTwo,
@@ -138,12 +138,12 @@ function QualityVerify() {
             isActive: heroData.isActive,
           };
         }
-        
+
         if (qualityData) {
           // Sort feature cards by order
           const sortedCards = [...(qualityData.featureCards || [])]
             .sort((a, b) => (a.order || 0) - (b.order || 0));
-          
+
           setData({
             ...qualityData,
             featureCards: sortedCards,
@@ -191,14 +191,14 @@ function QualityVerify() {
           <div
             key={card._id || card.number || card.title}
             className="flex flex-col justify-center rounded-[40px] border border-[#D9D9D9] bg-white
-                       p-6 sm:p-8 xl:pt-12 xl:pb-12 xl:pl-10 xl:pr-[162px]
+                       p-6 sm:p-8 md:pr-10 xl:pt-12 xl:pb-12 xl:pl-10 xl:pr-[162px]
                        transition-all duration-300 ease-out cursor-pointer
                        hover:-translate-y-6 hover:border hover:border-[#D9D9D9] hover:shadow-2xl hover:shadow-black/15"
           >
             <span
-              className="font-poppins font-normal capitalize mb-6 sm:mb-7 xl:mb-8"
+              className="font-poppins font-normal capitalize mb-6 sm:mb-7 xl:mb-8
+                         text-sm sm:text-base xl:text-[18px]"
               style={{
-                fontSize: "18px",
                 lineHeight: "100%",
                 letterSpacing: "0px",
                 color: "#67003E",
@@ -208,9 +208,9 @@ function QualityVerify() {
             </span>
 
             <h3
-              className="font-poppins font-semibold capitalize text-black mb-2 sm:mb-3"
+              className="font-poppins font-semibold capitalize text-black mb-2 sm:mb-3
+                         text-xl sm:text-2xl md:text-[28px] xl:text-[32px]"
               style={{
-                fontSize: "32px",
                 lineHeight: "120%",
                 letterSpacing: "0px",
               }}
@@ -219,10 +219,10 @@ function QualityVerify() {
             </h3>
 
             <p
-              className="font-poppins font-normal capitalize"
+              className="font-poppins font-normal capitalize
+                         text-sm sm:text-base xl:text-[18px]"
               style={{
-                fontSize: "18px",
-                lineHeight: "100%",
+                lineHeight: "160%",
                 letterSpacing: "0px",
                 color: "#686868",
               }}
