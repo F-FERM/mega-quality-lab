@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Mega Quality Lab",
   description: "Mega Quality Lab",
+  icons: {
+    icon: "/images/metaicon.png",
+  },
 };
 
 export default function RootLayout({
