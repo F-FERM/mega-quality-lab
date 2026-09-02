@@ -72,7 +72,8 @@ const defaultData: ContactPageData = {
   pageTitle: "Contact Mega Quality Laboratory",
   heroTitle: "LET'S TALK ABOUT YOUR",
   heroTitleTwo: "PROJECT.",
-  heroDescription: "From Soil Investigation To Construction Material Testing, Connect With Our Technical Team To Discuss Your Project Requirements And Laboratory Testing Needs.",
+  heroDescription:
+    "From Soil Investigation To Construction Material Testing, Connect With Our Technical Team To Discuss Your Project Requirements And Laboratory Testing Needs.",
   heroImage: "",
   heroImageAlt: "Contact Mega Quality Laboratory",
   heroInlineLinks: [],
@@ -119,11 +120,13 @@ function Toast({ toast, onClose }: { toast: ToastState; onClose: () => void }) {
       role="status"
       className="fixed z-50 flex items-start gap-3"
       style={{
-        top: "24px",
-        right: "24px",
+        top: "16px",
+        right: "16px",
+        left: "16px",
         maxWidth: "380px",
+        marginLeft: "auto",
         borderRadius: "14px",
-        padding: "16px 18px",
+        padding: "14px 16px",
         background: "#FFFFFF",
         boxShadow: "0px 8px 24px 0px #00000026",
         borderLeft: `4px solid ${isSuccess ? "#1E7A34" : "#B00020"}`,
@@ -149,10 +152,7 @@ function Toast({ toast, onClose }: { toast: ToastState; onClose: () => void }) {
         )}
       </div>
 
-      <p
-        className="font-poppins flex-1 text-black"
-        style={{ fontSize: "15px", lineHeight: "140%" }}
-      >
+      <p className="font-poppins flex-1 text-black" style={{ fontSize: "14px", lineHeight: "140%" }}>
         {toast.message}
       </p>
 
@@ -187,37 +187,40 @@ function Toast({ toast, onClose }: { toast: ToastState; onClose: () => void }) {
 
 function ProjectEnquirySectionSkeleton() {
   return (
-    <section className="w-full px-4 py-16 sm:px-6 lg:px-10 bg-[#FFCEEBB2]">
-      <div className="mx-auto flex w-full flex-col items-start gap-12 lg:flex-row lg:gap-16" style={{ maxWidth: "1464px" }}>
-        <div className="flex w-full flex-col" style={{ maxWidth: "574px" }}>
-          <div className="mb-6 flex items-center gap-3">
-            <span className="h-px w-12 bg-[#67003E]" />
-            <div className="h-6 w-40 animate-pulse rounded bg-gray-200" />
+    <section className="w-full bg-[#FFCEEBB2] px-4 py-12 sm:px-6 sm:py-16 lg:px-10">
+      <div className="mx-auto flex w-full flex-col items-start gap-10 lg:flex-row lg:gap-16" style={{ maxWidth: "1464px" }}>
+        <div className="flex w-full flex-col lg:max-w-[574px]">
+          <div className="mb-4 flex items-center gap-3 sm:mb-6">
+            <span className="h-px w-8 bg-[#67003E] sm:w-12" />
+            <div className="h-5 w-32 animate-pulse rounded bg-gray-200 sm:h-6 sm:w-40" />
           </div>
-          <div className="h-14 w-3/4 animate-pulse rounded bg-gray-200" />
-          <div className="mt-2 h-14 w-1/2 animate-pulse rounded bg-gray-200" />
-          <div className="mt-6 h-6 w-full animate-pulse rounded bg-gray-200" />
-          <div className="mt-8 flex w-full flex-col">
+          <div className="h-10 w-3/4 animate-pulse rounded bg-gray-200 sm:h-12 md:h-14" />
+          <div className="mt-2 h-10 w-1/2 animate-pulse rounded bg-gray-200 sm:h-12 md:h-14" />
+          <div className="mt-5 h-5 w-full animate-pulse rounded bg-gray-200 sm:mt-6 sm:h-6" />
+          <div className="mt-6 flex w-full flex-col sm:mt-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex w-full items-baseline border-t border-[#585858] py-6">
-                <div className="w-[200px] h-5 animate-pulse rounded bg-gray-200" />
+              <div key={i} className="flex w-full flex-col gap-2 border-t border-[#585858] py-5 sm:flex-row sm:items-baseline sm:gap-4 sm:py-6">
+                <div className="h-4 w-24 animate-pulse rounded bg-gray-200 sm:w-[200px]" />
                 <div className="flex flex-col gap-2">
-                  <div className="h-7 w-48 animate-pulse rounded bg-gray-200" />
-                  <div className="h-5 w-64 animate-pulse rounded bg-gray-200" />
+                  <div className="h-6 w-40 animate-pulse rounded bg-gray-200 sm:h-7 sm:w-48" />
+                  <div className="h-4 w-56 animate-pulse rounded bg-gray-200 sm:h-5 sm:w-64" />
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <div className="flex w-full flex-col animate-pulse" style={{ maxWidth: "870px", borderRadius: "30px", padding: "63px 35px", gap: "22px", background: "#81818152" }}>
-          <div className="h-8 w-48 animate-pulse rounded bg-gray-200" />
+        <div
+          className="flex w-full animate-pulse flex-col lg:max-w-[870px]"
+          style={{ borderRadius: "24px", padding: "32px 20px", gap: "18px", background: "#81818152" }}
+        >
+          <div className="h-7 w-40 animate-pulse rounded bg-gray-200 sm:h-8 sm:w-48" />
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex flex-col gap-2">
-              <div className="h-5 w-32 animate-pulse rounded bg-gray-200" />
-              <div className="h-14 w-full animate-pulse rounded bg-gray-200" />
+              <div className="h-4 w-28 animate-pulse rounded bg-gray-200 sm:h-5 sm:w-32" />
+              <div className="h-12 w-full animate-pulse rounded bg-gray-200 sm:h-14" />
             </div>
           ))}
-          <div className="h-14 w-full animate-pulse rounded-full bg-gray-200" />
+          <div className="h-12 w-full animate-pulse rounded-full bg-gray-200 sm:h-14" />
         </div>
       </div>
     </section>
@@ -323,7 +326,6 @@ function ProjectEnquirySection() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear that field's error as soon as the user edits it
     setErrors((prev) => {
       if (!prev[name as keyof FormFields]) return prev;
       const next = { ...prev };
@@ -397,25 +399,25 @@ function ProjectEnquirySection() {
   const { getInTouchTitle, getInTouchHeadingOne, getInTouchHeadingTwo, getInTouchDescription, locationCards } = data;
 
   const fieldLabelStyle = {
-    fontSize: "18px",
+    fontSize: "clamp(14px, 0.6vw + 12px, 18px)",
     lineHeight: "120%",
     letterSpacing: "0px",
   };
 
-  const getInputStyle = (hasError: boolean) => ({
-    height: "60px",
-    borderRadius: "10px",
-    padding: "19px 24px",
-    background: "#FFFFFF66",
-    boxShadow: "0px 0px 4px 0px #00000040",
-    fontSize: "18px",
-    lineHeight: "120%",
-    letterSpacing: "0px",
-    border: hasError ? "1px solid #B00020" : "1px solid transparent",
-  });
-
+ const getInputStyle = (hasError: boolean) => ({
+  minHeight: "clamp(50px, 4vw, 60px)",   // was: height
+  boxSizing: "border-box" as const,       // explicit, avoids relying on preflight
+  borderRadius: "10px",
+  padding: "clamp(12px, 1.5vw, 19px) clamp(16px, 2vw, 24px)",
+  background: "#FFFFFF66",
+  boxShadow: "0px 0px 4px 0px #00000040",
+  fontSize: "clamp(14px, 0.6vw + 12px, 18px)",
+  lineHeight: "120%",
+  letterSpacing: "0px",
+  border: hasError ? "1px solid #B00020" : "1px solid transparent",
+});
   const errorTextStyle = {
-    fontSize: "14px",
+    fontSize: "13px",
     lineHeight: "120%",
     color: "#B00020",
   };
@@ -428,49 +430,47 @@ function ProjectEnquirySection() {
   }));
 
   return (
-    <section className="w-full px-4 py-16 sm:px-6 lg:px-10 bg-[#FFCEEBB2]">
+    <section className="w-full bg-[#FFCEEBB2] px-4 py-12 sm:px-6 sm:py-16 lg:px-10">
       {toast && <Toast toast={toast} onClose={() => setToast(null)} />}
 
       <div
-        className="mx-auto flex w-full flex-col items-start gap-12 lg:flex-row lg:gap-16"
+        className="mx-auto flex w-full flex-col items-start gap-10 lg:flex-row lg:gap-16"
         style={{ maxWidth: "1464px" }}
       >
         {/* Left column */}
-        <div className="flex w-full flex-col" style={{ maxWidth: "574px" }}>
+        <div className="flex w-full flex-col lg:max-w-[574px]">
           {/* Eyebrow */}
-          <div className="mb-6 flex items-center gap-3">
-            <span className="h-px w-12 bg-[#67003E]" />
+          <div className="mb-4 flex items-center gap-3 sm:mb-6">
+            <span className="h-px w-8 bg-[#67003E] sm:w-12" />
             <span
               className="font-poppins font-normal capitalize text-[#67003E]"
-              style={{ fontSize: "24px", lineHeight: "100%", letterSpacing: "0px" }}
+              style={{ fontSize: "clamp(16px, 1.2vw + 10px, 24px)", lineHeight: "100%", letterSpacing: "0px" }}
             >
               {getInTouchTitle}
             </span>
           </div>
 
           {/* Heading */}
-         <h2
-  className="font-poppins font-bold uppercase text-black w-full"
-  style={{
-    maxWidth: "574px",
-    minHeight: "134px",
-    fontSize: "60px",
-    lineHeight: "112%",
-    letterSpacing: "0px",
-  }}
->
-  {getInTouchHeadingOne}
-  {""}
-  <span className="text-[#FFA8D9]">{getInTouchHeadingTwo}</span>
-</h2>
+          <h2
+            className="w-full font-poppins font-bold uppercase text-black"
+            style={{
+              maxWidth: "574px",
+              fontSize: "clamp(30px, 5vw + 10px, 60px)",
+              lineHeight: "112%",
+              letterSpacing: "0px",
+            }}
+          >
+            {getInTouchHeadingOne}
+            {""}
+            <span className="text-[#FFA8D9]">{getInTouchHeadingTwo}</span>
+          </h2>
 
           {/* Description */}
           <p
-            className="mt-6 font-poppins font-medium capitalize text-[#727272]"
+            className="mt-5 font-poppins font-medium capitalize text-[#727272] sm:mt-6"
             style={{
-              width: "574px",
-              maxWidth: "100%",
-              fontSize: "22px",
+              maxWidth: "574px",
+              fontSize: "clamp(16px, 1vw + 10px, 22px)",
               lineHeight: "120%",
               letterSpacing: "0px",
             }}
@@ -479,28 +479,28 @@ function ProjectEnquirySection() {
           </p>
 
           {/* Locations */}
-          <div className="mt-8 flex w-full flex-col">
+          <div className="mt-6 flex w-full flex-col sm:mt-8">
             {formattedLocations.map((loc) => (
               <div
                 key={loc.index}
-                className="flex w-full items-baseline border-t border-[#585858] py-6"
+                className="flex w-full flex-col gap-2 border-t border-[#585858] py-5 sm:flex-row sm:items-baseline sm:gap-4 sm:py-6"
               >
                 <span
-                  className="w-[200px] shrink-0 font-poppins font-normal capitalize text-[#67003E]"
-                  style={{ fontSize: "18px", lineHeight: "100%", letterSpacing: "0px" }}
+                  className="shrink-0 font-poppins font-normal capitalize text-[#67003E] sm:w-[200px]"
+                  style={{ fontSize: "clamp(14px, 0.6vw + 12px, 18px)", lineHeight: "100%", letterSpacing: "0px" }}
                 >
                   {loc.index}
                 </span>
-                <div className="flex flex-col items-start" style={{ gap: "10px" }}>
+                <div className="flex flex-col items-start" style={{ gap: "8px" }}>
                   <span
                     className="font-poppins font-semibold capitalize text-black"
-                    style={{ fontSize: "26px", lineHeight: "120%", letterSpacing: "0px" }}
+                    style={{ fontSize: "clamp(18px, 1.5vw + 10px, 26px)", lineHeight: "120%", letterSpacing: "0px" }}
                   >
                     {loc.title}
                   </span>
                   <span
                     className="font-poppins font-light capitalize text-black"
-                    style={{ fontSize: "18px", lineHeight: "120%", letterSpacing: "0px" }}
+                    style={{ fontSize: "clamp(14px, 0.6vw + 12px, 18px)", lineHeight: "120%", letterSpacing: "0px" }}
                   >
                     {loc.address}
                   </span>
@@ -515,34 +515,26 @@ function ProjectEnquirySection() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="flex w-full flex-col"
+          className="flex w-full flex-col lg:max-w-[870px]"
           style={{
-            maxWidth: "870px",
-            borderRadius: "30px",
-            paddingTop: "63px",
-            paddingRight: "35px",
-            paddingBottom: "63px",
-            paddingLeft: "36px",
-            gap: "22px",
+            borderRadius: "24px",
+            padding: "clamp(24px, 5vw, 63px) clamp(20px, 3vw, 35px)",
+            gap: "18px",
             boxShadow: "0px 0px 4px 0px #00000040",
             background: "#81818152",
           }}
         >
           <h3
             className="font-poppins font-semibold uppercase text-black"
-            style={{ fontSize: "32px", lineHeight: "120%", letterSpacing: "0px" }}
+            style={{ fontSize: "clamp(24px, 2vw + 14px, 32px)", lineHeight: "120%", letterSpacing: "0px" }}
           >
             Project Enquiry
           </h3>
 
-          <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:gap-8">
             <div className="flex w-full flex-col gap-2">
-              <label
-                htmlFor="fullName"
-                className="font-poppins font-normal capitalize text-black"
-                style={fieldLabelStyle}
-              >
-                Full Name 
+              <label htmlFor="fullName" className="font-poppins font-normal capitalize text-black" style={fieldLabelStyle}>
+                Full Name
               </label>
               <input
                 id="fullName"
@@ -553,7 +545,7 @@ function ProjectEnquirySection() {
                 onChange={handleChange}
                 aria-invalid={Boolean(errors.fullName)}
                 aria-describedby={errors.fullName ? "fullName-error" : undefined}
-                className="font-poppins placeholder-[#5C5C5C] focus:outline-none w-full"
+                className="font-poppins w-full placeholder-[#5C5C5C] focus:outline-none"
                 style={getInputStyle(Boolean(errors.fullName))}
               />
               {errors.fullName && (
@@ -564,12 +556,8 @@ function ProjectEnquirySection() {
             </div>
 
             <div className="flex w-full flex-col gap-2">
-              <label
-                htmlFor="companyName"
-                className="font-poppins font-normal capitalize text-black"
-                style={fieldLabelStyle}
-              >
-                Company 
+              <label htmlFor="companyName" className="font-poppins font-normal capitalize text-black" style={fieldLabelStyle}>
+                Company
               </label>
               <input
                 id="companyName"
@@ -580,7 +568,7 @@ function ProjectEnquirySection() {
                 onChange={handleChange}
                 aria-invalid={Boolean(errors.companyName)}
                 aria-describedby={errors.companyName ? "companyName-error" : undefined}
-                className="font-poppins placeholder-[#5C5C5C] focus:outline-none w-full"
+                className="font-poppins w-full placeholder-[#5C5C5C] focus:outline-none"
                 style={getInputStyle(Boolean(errors.companyName))}
               />
               {errors.companyName && (
@@ -591,14 +579,10 @@ function ProjectEnquirySection() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:gap-8">
             <div className="flex w-full flex-col gap-2">
-              <label
-                htmlFor="email"
-                className="font-poppins font-normal capitalize text-black"
-                style={fieldLabelStyle}
-              >
-                Email 
+              <label htmlFor="email" className="font-poppins font-normal capitalize text-black" style={fieldLabelStyle}>
+                Email
               </label>
               <input
                 id="email"
@@ -609,7 +593,7 @@ function ProjectEnquirySection() {
                 onChange={handleChange}
                 aria-invalid={Boolean(errors.email)}
                 aria-describedby={errors.email ? "email-error" : undefined}
-                className="font-poppins placeholder-[#5C5C5C] focus:outline-none w-full"
+                className="font-poppins w-full placeholder-[#5C5C5C] focus:outline-none"
                 style={getInputStyle(Boolean(errors.email))}
               />
               {errors.email && (
@@ -620,12 +604,8 @@ function ProjectEnquirySection() {
             </div>
 
             <div className="flex w-full flex-col gap-2">
-              <label
-                htmlFor="contactNo"
-                className="font-poppins font-normal capitalize text-black"
-                style={fieldLabelStyle}
-              >
-                Phone 
+              <label htmlFor="contactNo" className="font-poppins font-normal capitalize text-black" style={fieldLabelStyle}>
+                Phone
               </label>
               <input
                 id="contactNo"
@@ -636,7 +616,7 @@ function ProjectEnquirySection() {
                 onChange={handleChange}
                 aria-invalid={Boolean(errors.contactNo)}
                 aria-describedby={errors.contactNo ? "contactNo-error" : undefined}
-                className="font-poppins placeholder-[#5C5C5C] focus:outline-none w-full"
+                className="font-poppins w-full placeholder-[#5C5C5C] focus:outline-none"
                 style={getInputStyle(Boolean(errors.contactNo))}
               />
               {errors.contactNo && (
@@ -648,12 +628,8 @@ function ProjectEnquirySection() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="serviceRequired"
-              className="font-poppins font-normal capitalize text-black"
-              style={fieldLabelStyle}
-            >
-              Service Required 
+            <label htmlFor="serviceRequired" className="font-poppins font-normal capitalize text-black" style={fieldLabelStyle}>
+              Service Required
             </label>
             <div className="relative">
               <select
@@ -685,13 +661,7 @@ function ProjectEnquirySection() {
                 viewBox="0 0 16 16"
                 fill="none"
               >
-                <path
-                  d="M4 6l4 4 4-4"
-                  stroke="#5C5C5C"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                <path d="M4 6l4 4 4-4" stroke="#5C5C5C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
             {errors.serviceRequired && (
@@ -702,12 +672,8 @@ function ProjectEnquirySection() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="projectDetails"
-              className="font-poppins font-normal capitalize text-black"
-              style={fieldLabelStyle}
-            >
-              Project Details 
+            <label htmlFor="projectDetails" className="font-poppins font-normal capitalize text-black" style={fieldLabelStyle}>
+              Project Details
             </label>
             <textarea
               id="projectDetails"
@@ -718,7 +684,7 @@ function ProjectEnquirySection() {
               rows={5}
               aria-invalid={Boolean(errors.projectDetails)}
               aria-describedby={errors.projectDetails ? "projectDetails-error" : undefined}
-              className="font-poppins placeholder-[#5C5C5C] focus:outline-none w-full"
+              className="font-poppins w-full placeholder-[#5C5C5C] focus:outline-none"
               style={{ ...getInputStyle(Boolean(errors.projectDetails)), height: "auto", resize: "vertical" }}
             />
             {errors.projectDetails && (
@@ -731,19 +697,19 @@ function ProjectEnquirySection() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="font-poppins mt-2 flex items-center justify-center uppercase text-white transition-opacity hover:opacity-90 w-full disabled:opacity-60"
+            className="font-poppins mt-2 flex w-full cursor-pointer items-center justify-center uppercase text-white hover:bg-[#4A002C]"
             style={{
               maxWidth: "100%",
-              height: "60px",
+              height: "clamp(50px, 4vw, 60px)",
               borderRadius: "20px",
-              paddingTop: "15px",
-              paddingRight: "42px",
-              paddingBottom: "16px",
-              paddingLeft: "42px",
+              paddingTop: "clamp(10px, 1.2vw, 15px)",
+              paddingRight: "clamp(20px, 3vw, 42px)",
+              paddingBottom: "clamp(10px, 1.2vw, 16px)",
+              paddingLeft: "clamp(20px, 3vw, 42px)",
               gap: "10px",
               background: "#67003E",
               fontWeight: 500,
-              fontSize: "22px",
+              fontSize: "clamp(16px, 1.2vw + 10px, 22px)",
               lineHeight: "120%",
               letterSpacing: "0px",
               textAlign: "center",
@@ -751,13 +717,7 @@ function ProjectEnquirySection() {
           >
             {isSubmitting ? "Sending..." : "Send Project Enquiry"}
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path
-                d="M4 9h10M9 4l5 5-5 5"
-                stroke="#FFFFFF"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <path d="M4 9h10M9 4l5 5-5 5" stroke="#FFFFFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </form>

@@ -82,7 +82,6 @@ const data = {
       icon: Contact,
       items: [
         { title: "Contact section", url: "/admin/dashboard/contact/" },
-        { title: "Contact Submission", url: "/admin/dashboard/contact-submission/" },
       ],
     },
     {
@@ -117,7 +116,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
                   rounded-lg
 
-                  bg-orange-700
+                  bg-[#67003E]
 
                   text-white
                 "
@@ -136,7 +135,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   leading-tight
                 "
               >
-                <span className="truncate font-semibold">Duae</span>
+                <span className="truncate font-semibold">Mega Quality Labs</span>
                 <span className="truncate text-xs">Admin Dashboard</span>
               </div>
             </SidebarMenuButton>
@@ -187,7 +186,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               render={<Link href={subItem.url} />}
                               isActive={pathname === subItem.url}
                               className="
-                                data-active:bg-orange-600
+                                data-active:bg-[#67003E]
                                 data-active:text-white
                               "
                             >

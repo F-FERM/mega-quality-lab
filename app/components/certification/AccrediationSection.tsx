@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import api from "@/lib/axios";
-import ACCREDITED_BADGE from "../../../public/images/accredited-badge.png";
+import ACCREDITED_BADGE from "../../../public/images/certificationbadge1.png";
 
 // ================= TYPES =================
 
@@ -485,7 +485,7 @@ function AccreditationSection() {
               <button
                 type="button"
                 onClick={() => setIsCertModalOpen(true)}
-                className="inline-flex w-fit items-center justify-center gap-[10px] rounded-[20px] bg-[#67003E] text-white transition-opacity hover:opacity-90"
+                className="inline-flex w-fit items-center justify-center gap-[10px] rounded-[20px] bg-[#67003E] hover:bg-[#4A002C] cursor-pointer text-white transition-opacity hover:opacity-90"
                 style={{
                   paddingTop: "clamp(12px, 1vw + 8px, 15px)",
                   paddingRight: "clamp(24px, 2.5vw + 10px, 42px)",
@@ -494,7 +494,7 @@ function AccreditationSection() {
                 }}
               >
                 <span
-                  className="font-poppins font-medium uppercase"
+                  className="font-poppins font-medium uppercase "
                   style={{ fontSize: "clamp(16px, 1.2vw + 10px, 22px)", lineHeight: "120%", letterSpacing: "0px" }}
                 >
                   {eiacAccreditation.viewCertificateText || "View Full Certificate"}

@@ -232,7 +232,7 @@ function QualitySystem() {
               color: "#67003E",
             }}
           >
-            Quality System
+           Material Testing
           </span>
           <span className="h-px w-8 shrink-0 bg-[#67003E] sm:w-12" />
         </div>

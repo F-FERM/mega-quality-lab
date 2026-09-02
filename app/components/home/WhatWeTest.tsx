@@ -108,7 +108,7 @@ function resolveImage(path: string): string {
 
 function WhatWeTestSkeleton() {
   return (
-    <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
+    <section className="w-full bg-white px-4 pt-16 pb-32 sm:px-6 sm:pt-20 sm:pb-40 md:pt-24 md:pb-48 xl:pt-28 xl:pb-56">
       <div className="mx-auto w-full max-w-[1464px]">
         {/* Eyebrow Skeleton */}
         <div className="mb-6 flex items-center gap-3">
@@ -236,7 +236,7 @@ function WhatWeTest() {
   });
 
   return (
-    <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
+    <section className="w-full bg-white px-4 pt-16 pb-32 sm:px-6 sm:pt-20 sm:pb-40 md:pt-24 md:pb-48 xl:pt-28 xl:pb-56">
       <div className="mx-auto w-full max-w-[1464px]">
         {/* Eyebrow */}
         <div className="mb-6 flex items-center gap-3">

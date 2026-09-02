@@ -48,7 +48,8 @@ const defaultData: ManagementProcessData = {
   managementSubtitle: "EXPERIENCED",
   managementSubtitleTwo: "PEOPLE.",
   managementSubtitleThree: "RELIABLE RESULTS.",
-  managementDescription: "Abdullah Mohammad Has Over 10 Years Of Experience In Geotechnical And Materials Testing Laboratory Operations, Including Quality-Control Activities Under ISO 17025:2017 And Management Of Major Projects In Dubai And Abu Dhabi.",
+  managementDescription:
+    "Abdullah Mohammad Has Over 10 Years Of Experience In Geotechnical And Materials Testing Laboratory Operations, Including Quality-Control Activities Under ISO 17025:2017 And Management Of Major Projects In Dubai And Abu Dhabi.",
   managingDirectorName: "ABDULLAH MOHAMMAD",
   managingDirectorTitle: "MANAGING DIRECTOR",
   managingDirectorImage: "",
@@ -68,7 +69,11 @@ const defaultData: ManagementProcessData = {
   isActive: true,
 };
 
-// Layout constants (px) — derived from the reference design
+// ─────────────────────────────────────────────────────────
+// Layout constants (px) — this is the "design canvas" size.
+// Everything below is converted to % / cqw so it scales
+// fluidly with the container instead of using fixed pixels.
+// ─────────────────────────────────────────────────────────
 const CARD_W = 470;
 const CARD_H = 274;
 const GAP_UP = 44; // connector length: top card -> spine
@@ -80,32 +85,41 @@ const SPINE_Y = CARD_H + GAP_UP;
 const BOTTOM_ROW_Y = SPINE_Y + SPINE_H + GAP_DOWN;
 const CONTAINER_H = BOTTOM_ROW_Y + CARD_H;
 
+// Convert a design px value into a % of container width or height
+const pctW = (px: number) => `${((px / CONTAINER_W) * 100).toFixed(4)}%`;
+const pctH = (px: number) => `${((px / CONTAINER_H) * 100).toFixed(4)}%`;
+// Convert a design px value into cqw (scales with the queried
+// container's inline size — used for anything that must scale
+// uniformly regardless of row: font sizes, paddings, radii, thin bars)
+const cqw = (px: number) => `${((px / CONTAINER_W) * 100).toFixed(4)}cqw`;
+
 function TestingProcessSkeleton() {
   return (
-    <section className="w-full bg-[#FCE4F2] px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
+    <section className="w-full bg-[#FCE4F2] px-4 py-12 sm:px-6 sm:py-16 md:py-20 xl:py-28">
       <div className="mx-auto w-full max-w-[1464px]">
         {/* Eyebrow Skeleton */}
         <div className="mb-6 flex items-center gap-3">
           <span className="h-px w-12 bg-[#67003E]" />
-          <div className="h-6 w-40 animate-pulse rounded bg-gray-200" />
+          <div className="h-6 w-40 animate-pulse rounded bg-gray-300" />
         </div>
 
         {/* Heading Skeleton */}
-        <div className="mb-14">
-          <div className="h-10 w-3/4 animate-pulse rounded bg-gray-200 sm:h-12 md:h-14 xl:h-16" />
+        <div className="mb-10 md:mb-14">
+          <div className="h-9 w-3/4 animate-pulse rounded bg-gray-300 sm:h-11 md:h-14 xl:h-16" />
         </div>
 
         {/* Desktop Timeline Skeleton */}
-        <div className="hidden md:block">
-          <div className="relative mx-auto" style={{ width: CONTAINER_W, height: CONTAINER_H }}>
+        <div
+          className="hidden md:block"
+          style={{ containerType: "inline-size" } as React.CSSProperties}
+        >
+          <div
+            className="relative mx-auto w-full max-w-[1464px]"
+            style={{ aspectRatio: `${CONTAINER_W} / ${CONTAINER_H}` }}
+          >
             <div
               className="absolute rounded-full bg-gray-300"
-              style={{
-                left: 0,
-                top: SPINE_Y,
-                width: CONTAINER_W,
-                height: SPINE_H,
-              }}
+              style={{ left: 0, top: pctH(SPINE_Y), width: "100%", height: pctH(SPINE_H) }}
             />
             {[1, 2, 3, 4].map((_, i) => {
               const frac = (i + 1) / 6;
@@ -118,24 +132,20 @@ function TestingProcessSkeleton() {
                   <div
                     className="absolute bg-gray-300"
                     style={{
-                      left: centerX - 1,
-                      top: isTop ? CARD_H : SPINE_Y,
-                      width: 11,
-                      height: isTop ? GAP_UP + SPINE_H : GAP_DOWN + SPINE_H,
+                      left: pctW(centerX - 1),
+                      top: isTop ? pctH(CARD_H) : pctH(SPINE_Y),
+                      width: cqw(11),
+                      height: isTop ? pctH(GAP_UP + SPINE_H) : pctH(GAP_DOWN + SPINE_H),
                     }}
                   />
                   <div
-                    className="absolute bg-gray-300 animate-pulse"
+                    className="absolute animate-pulse bg-gray-300"
                     style={{
-                      left,
-                      top: isTop ? TOP_ROW_Y : BOTTOM_ROW_Y,
-                      width: CARD_W,
-                      height: CARD_H,
-                      borderRadius: "30px",
-                      paddingTop: "59px",
-                      paddingRight: "56px",
-                      paddingBottom: "59px",
-                      paddingLeft: "56px",
+                      left: pctW(left),
+                      top: isTop ? pctH(TOP_ROW_Y) : pctH(BOTTOM_ROW_Y),
+                      width: pctW(CARD_W),
+                      height: pctH(CARD_H),
+                      borderRadius: cqw(30),
                     }}
                   />
                 </div>
@@ -145,13 +155,54 @@ function TestingProcessSkeleton() {
         </div>
 
         {/* Mobile Skeleton */}
-        <div className="flex flex-col gap-6 md:hidden">
+        <div className="flex flex-col gap-4 md:hidden">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-[30px] bg-gray-300 animate-pulse p-8" style={{ height: "150px" }} />
+            <div
+              key={i}
+              className="h-[150px] animate-pulse rounded-[24px] bg-gray-300 p-6 sm:h-[170px] sm:p-8"
+            />
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Card content shared between desktop timeline + mobile stack.
+// Hover: the accent line extends, and a border fades in.
+// ─────────────────────────────────────────────────────────
+function StepCardInner({
+  step,
+  numberFontPx,
+  titleFontPx,
+}: {
+  step: ProcessStep;
+  numberFontPx: number;
+  titleFontPx: number;
+}) {
+  return (
+    <>
+      <div className="flex items-center justify-between">
+       <span
+  className="block h-px origin-left bg-[#FC0198] transition-transform duration-300 ease-out group-hover:scale-x-[4]"
+  style={{ width: cqw(12) }}
+/>
+        <span
+          className="font-poppins font-medium capitalize text-[#FC0198]"
+          style={{ fontSize: cqw(numberFontPx), lineHeight: "100%" }}
+        >
+          {step.stepNumber}
+        </span>
+      </div>
+
+      <h3
+        className="font-poppins font-semibold uppercase text-white"
+        style={{ fontSize: cqw(titleFontPx), lineHeight: "120%" }}
+      >
+        {step.title}
+      </h3>
+    </>
   );
 }
 
@@ -165,17 +216,20 @@ function TestingProcess() {
         const res = await api.get("/home-management-process");
 
         if (res.data && typeof res.data === "object") {
-          // Check if response is array or single object
           let responseData = res.data;
           if (Array.isArray(responseData) && responseData.length > 0) {
             responseData = responseData[0];
-          } else if (responseData.managementProcess && Array.isArray(responseData.managementProcess) && responseData.managementProcess.length > 0) {
+          } else if (
+            responseData.managementProcess &&
+            Array.isArray(responseData.managementProcess) &&
+            responseData.managementProcess.length > 0
+          ) {
             responseData = responseData.managementProcess[0];
           }
 
-          // Sort process steps by order
-          const sortedSteps = (responseData.processSteps || [])
-            .sort((a: ProcessStep, b: ProcessStep) => (a.order || 0) - (b.order || 0));
+          const sortedSteps = (responseData.processSteps || []).sort(
+            (a: ProcessStep, b: ProcessStep) => (a.order || 0) - (b.order || 0)
+          );
 
           const managementData: ManagementProcessData = {
             _id: responseData._id,
@@ -216,70 +270,40 @@ function TestingProcess() {
   }
 
   const { processTitle, processSubtitle, processSteps } = data;
-
-  // Use process steps from API or fallback to default
   const steps = processSteps.length > 0 ? processSteps : defaultData.processSteps;
 
   return (
-    <section className="w-full bg-[#FCE4F2] px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
+    <section className="w-full bg-[#FCE4F2] px-4 py-12 sm:px-6 sm:py-16 md:py-20 xl:py-28">
       <div className="mx-auto w-full max-w-[1464px]">
         {/* Eyebrow */}
-        <div className="mb-6 flex items-center gap-3">
-          <span className="h-px w-12 bg-[#67003E]" />
-          <span
-            className="font-poppins font-normal capitalize"
-            style={{
-              fontSize: "24px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#67003E",
-            }}
-          >
+        <div className="mb-4 flex items-center gap-3 sm:mb-6">
+          <span className="h-px w-8 bg-[#67003E] sm:w-12" />
+          <span className="font-poppins font-normal capitalize text-[#67003E] text-lg sm:text-xl md:text-2xl leading-none">
             {processTitle}
           </span>
         </div>
 
         {/* Heading */}
-        <h2
-          className="
-            mb-14
-            font-poppins
-            font-bold
-            uppercase
-            leading-[112%]
-            text-black
-            text-[32px]
-            sm:text-[40px]
-            md:text-[48px]
-            xl:text-[60px]
-          "
-          style={{
-            letterSpacing: "0px",
-            width: "863px",
-            maxWidth: "100%",
-            height: "134px",
-            transform: "rotate(0deg)",
-            opacity: 1,
-          }}
-        >
+        <h2 className="mb-8 max-w-[863px] font-poppins font-bold uppercase leading-[112%] text-black text-[26px] sm:mb-10 sm:text-[36px] md:mb-14 md:text-[44px] xl:text-[60px]">
           {processSubtitle}
         </h2>
 
-        {/* ===== Desktop / tablet timeline ===== */}
-        <div className="hidden overflow-x-auto md:block">
+        {/* ===== Desktop / tablet timeline (md and up) =====
+            container-type: inline-size makes `cqw` units below scale
+            with THIS element's rendered width — so at 768px wide it's
+            ~52% the size of the 1464px design, and it never scrolls. */}
+        <div
+          className="hidden md:block"
+          style={{ containerType: "inline-size" } as React.CSSProperties}
+        >
           <div
-            className="relative mx-auto"
-            style={{ width: CONTAINER_W, height: CONTAINER_H }}
+            className="relative mx-auto w-full max-w-[1464px]"
+            style={{ aspectRatio: `${CONTAINER_W} / ${CONTAINER_H}` }}
           >
             {/* Spine */}
             <div
               className="absolute rounded-full bg-[#67003E]"
-              style={{
-                left: 0,
-                top: SPINE_Y,
-                width: CONTAINER_W,
-                height: SPINE_H,
-              }}
+              style={{ left: 0, top: pctH(SPINE_Y), width: "100%", height: pctH(SPINE_H) }}
             />
 
             {steps.map((step, i) => {
@@ -289,9 +313,7 @@ function TestingProcess() {
               const isTop = i % 2 === 0;
 
               const connectorTop = isTop ? CARD_H : SPINE_Y;
-              const connectorHeight = isTop
-                ? GAP_UP + SPINE_H
-                : GAP_DOWN + SPINE_H;
+              const connectorHeight = isTop ? GAP_UP + SPINE_H : GAP_DOWN + SPINE_H;
 
               return (
                 <div key={step._id || step.stepNumber}>
@@ -299,54 +321,30 @@ function TestingProcess() {
                   <div
                     className="absolute bg-[#67003E]"
                     style={{
-                      left: centerX - 1,
-                      top: connectorTop,
-                      width: 11,
-                      height: connectorHeight,
+                      left: pctW(centerX - 1),
+                      top: pctH(connectorTop),
+                      width: cqw(11),
+                      height: pctH(connectorHeight),
                     }}
                   />
 
                   {/* Card */}
                   <div
-                    className="absolute flex flex-col justify-between bg-[#67003E]"
+                    className="group absolute flex cursor-pointer flex-col justify-between border-2 border-transparent bg-[#67003E] transition-all duration-300 hover:border-[#FC0198] hover:border-4"
                     style={{
-                      left,
-                      top: isTop ? TOP_ROW_Y : BOTTOM_ROW_Y,
-                      width: CARD_W,
-                      height: CARD_H,
-                      paddingTop: "59px",
-                      paddingRight: "56px",
-                      paddingBottom: "59px",
-                      paddingLeft: "56px",
-                      gap: "10px",
-                      borderRadius: "30px",
+                      left: pctW(left),
+                      top: isTop ? pctH(TOP_ROW_Y) : pctH(BOTTOM_ROW_Y),
+                      width: pctW(CARD_W),
+                      height: pctH(CARD_H),
+                      paddingTop: cqw(59),
+                      paddingRight: cqw(56),
+                      paddingBottom: cqw(59),
+                      paddingLeft: cqw(56),
+                      gap: cqw(10),
+                      borderRadius: cqw(30),
                     }}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="h-px w-10 bg-[#FC0198]" />
-                      <span
-                        className="font-poppins font-medium capitalize"
-                        style={{
-                          fontSize: "58px",
-                          lineHeight: "100%",
-                          letterSpacing: "0px",
-                          color: "#FC0198",
-                        }}
-                      >
-                        {step.stepNumber}
-                      </span>
-                    </div>
-
-                    <h3
-                      className="font-poppins font-semibold uppercase text-white"
-                      style={{
-                        fontSize: "28px",
-                        lineHeight: "120%",
-                        letterSpacing: "0px",
-                      }}
-                    >
-                      {step.title}
-                    </h3>
+                    <StepCardInner step={step} numberFontPx={58} titleFontPx={28} />
                   </div>
                 </div>
               );
@@ -354,23 +352,17 @@ function TestingProcess() {
           </div>
         </div>
 
-        {/* ===== Mobile stacked fallback ===== */}
-        <div className="flex flex-col gap-6 md:hidden">
+        {/* ===== Mobile stacked fallback (< md) ===== */}
+        <div className="flex flex-col gap-4 md:hidden">
           {steps.map((step) => (
             <div
               key={step._id || step.stepNumber}
-              className="flex flex-col justify-between rounded-[30px] bg-[#67003E] p-8"
+              className="group flex cursor-pointer flex-col justify-between rounded-[24px] border-2 border-transparent bg-[#67003E] p-6 transition-all duration-300 hover:border-[#FC0198] hover:shadow-[0_0_0_4px_rgba(252,1,152,0.15)] sm:rounded-[30px] sm:p-8"
             >
-              <div className="mb-6 flex items-center justify-between">
-                <span className="h-px w-10 bg-[#FC0198]" />
-                <span
-                  className="font-poppins font-medium capitalize"
-                  style={{
-                    fontSize: "48px",
-                    lineHeight: "100%",
-                    letterSpacing: "0px",
-                    color: "#FC0198",
-                  }}
+              <div className="mb-5 flex items-center justify-between sm:mb-6">
+<span className="h-px w-3 origin-left bg-[#FC0198] transition-transform duration-300 ease-out group-hover:scale-x-[4] sm:w-4" />                <span
+                  className="font-poppins font-medium capitalize text-[#FC0198]"
+                  style={{ fontSize: "clamp(32px, 10vw, 48px)", lineHeight: "100%" }}
                 >
                   {step.stepNumber}
                 </span>
@@ -378,11 +370,7 @@ function TestingProcess() {
 
               <h3
                 className="font-poppins font-semibold uppercase text-white"
-                style={{
-                  fontSize: "24px",
-                  lineHeight: "120%",
-                  letterSpacing: "0px",
-                }}
+                style={{ fontSize: "clamp(18px, 5vw, 24px)", lineHeight: "120%" }}
               >
                 {step.title}
               </h3>

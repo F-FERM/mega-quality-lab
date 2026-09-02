@@ -144,7 +144,7 @@ function FooterSkeleton() {
   return (
     <footer className="relative w-full overflow-x-hidden animate-pulse" style={{ backgroundColor: "#270027" }}>
       <div className="mx-auto flex w-full max-w-[1920px] flex-col" style={{ paddingTop: "53px", paddingRight: "clamp(20px, 4vw, 81px)", paddingBottom: "1px", paddingLeft: "clamp(20px, 4vw, 80px)" }}>
-        <div className="mx-auto grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" style={{ width: "1759px", maxWidth: "100%", gap: "clamp(30px, 4vw, 80px)" }}>
+        <div className="mx-auto grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ width: "1759px", maxWidth: "100%", gap: "clamp(30px, 4vw, 80px)" }}>
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex flex-col">
               <div className="mb-6 h-4 w-24 rounded bg-white/10" />
@@ -161,9 +161,9 @@ function FooterSkeleton() {
           <div className="h-4 w-64 rounded bg-white/10" />
           <div className="h-4 w-80 rounded bg-white/10" />
         </div>
-        <div className="mx-auto flex w-full items-center justify-center" style={{ width: "1127px", maxWidth: "100%", height: "180px" }}>
+        <div className="mx-auto flex w-full flex-wrap items-center justify-center gap-2 px-4" style={{ maxWidth: "1127px", minHeight: "120px", paddingTop: "24px", paddingBottom: "24px" }}>
           <div className="relative h-16 w-16 shrink-0 opacity-40 sm:h-20 sm:w-20 xl:h-28 xl:w-28 rounded-full bg-white/10" />
-          <div className="h-12 w-48 rounded bg-white/10" style={{ marginLeft: "10px" }} />
+          <div className="h-12 w-48 rounded bg-white/10" />
         </div>
       </div>
     </footer>

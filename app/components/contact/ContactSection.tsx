@@ -53,7 +53,8 @@ const defaultData: ContactPageData = {
   pageTitle: "Contact Mega Quality Laboratory",
   heroTitle: "LET'S TALK ABOUT YOUR",
   heroTitleTwo: "PROJECT.",
-  heroDescription: "From Soil Investigation To Construction Material Testing, Connect With Our Technical Team To Discuss Your Project Requirements And Laboratory Testing Needs.",
+  heroDescription:
+    "From Soil Investigation To Construction Material Testing, Connect With Our Technical Team To Discuss Your Project Requirements And Laboratory Testing Needs.",
   heroImage: "",
   heroImageAlt: "Contact Mega Quality Laboratory",
   heroInlineLinks: [],
@@ -88,33 +89,39 @@ function resolveImage(path: string): string {
 
 function ContactSectionSkeleton() {
   return (
-    <section className="w-full bg-white px-4 pb-16 pt-[110px] sm:px-6 sm:pb-20 sm:pt-[150px] md:pb-24 md:pt-[180px] xl:pb-28 xl:pt-[250px]">
-      <div className="mx-auto flex w-full flex-col items-start lg:flex-row" style={{ maxWidth: "1464px", minHeight: "494px", gap: "20px" }}>
-        <div className="flex w-full flex-col justify-center" style={{ maxWidth: "722px", minHeight: "494px" }}>
-          <div className="flex w-full flex-col" style={{ maxWidth: "722px", minHeight: "426px", gap: "26px" }}>
+    <section className="w-full bg-white px-4 pb-12 pt-[90px] sm:px-6 sm:pb-16 sm:pt-[120px] md:pb-24 md:pt-[180px] xl:pb-28 xl:pt-[250px]">
+      <div
+        className="mx-auto flex w-full flex-col items-start gap-8 xl:flex-row xl:gap-5"
+        style={{ maxWidth: "1464px" }}
+      >
+        <div className="flex w-full flex-col justify-center xl:max-w-[722px]">
+          <div className="flex w-full flex-col gap-5 sm:gap-6 lg:gap-[26px]">
             <div className="flex flex-col">
-              <div className="mb-6 flex items-center gap-3">
-                <span className="h-px w-12 bg-[#67003E]" />
-                <div className="h-6 w-48 animate-pulse rounded bg-gray-200" />
+              <div className="mb-4 flex items-center gap-3 sm:mb-6">
+                <span className="h-px w-8 bg-[#67003E] sm:w-12" />
+                <div className="h-5 w-40 animate-pulse rounded bg-gray-200 sm:h-6 sm:w-48" />
               </div>
-              <div className="h-14 w-3/4 animate-pulse rounded bg-gray-200" />
-              <div className="mt-2 h-14 w-1/2 animate-pulse rounded bg-gray-200" />
+              <div className="h-10 w-3/4 animate-pulse rounded bg-gray-200 sm:h-12 md:h-14" />
+              <div className="mt-2 h-10 w-1/2 animate-pulse rounded bg-gray-200 sm:h-12 md:h-14" />
             </div>
-            <div className="h-6 w-full animate-pulse rounded bg-gray-200" />
-            <div className="h-6 w-5/6 animate-pulse rounded bg-gray-200" />
-            <div className="flex flex-nowrap gap-x-12">
+            <div className="h-5 w-full animate-pulse rounded bg-gray-200 sm:h-6" />
+            <div className="h-5 w-5/6 animate-pulse rounded bg-gray-200 sm:h-6" />
+            <div className="flex flex-wrap gap-x-8 gap-y-6 sm:gap-x-10 xl:flex-nowrap xl:gap-x-12">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex shrink-0 flex-col gap-2">
                   <span className="h-px w-full bg-[#585858]" />
-                  <div className="h-5 w-20 animate-pulse rounded bg-gray-200" />
-                  <div className="h-8 w-32 animate-pulse rounded bg-gray-200" />
+                  <div className="h-4 w-16 animate-pulse rounded bg-gray-200 sm:h-5 sm:w-20" />
+                  <div className="h-7 w-28 animate-pulse rounded bg-gray-200 sm:h-8 sm:w-32" />
                 </div>
               ))}
             </div>
           </div>
         </div>
-        <div className="relative w-full shrink-0" style={{ maxWidth: "722px" }}>
-          <div className="relative w-full overflow-hidden rounded-[30px] bg-gray-200 animate-pulse" style={{ width: "100%", maxWidth: "722px", height: "494px" }} />
+        <div className="relative w-full shrink-0 xl:max-w-[722px]">
+          <div
+            className="relative w-full overflow-hidden rounded-[20px] bg-gray-200 animate-pulse sm:rounded-[24px] lg:rounded-[30px]"
+            style={{ aspectRatio: "722 / 494" }}
+          />
         </div>
       </div>
     </section>
@@ -184,27 +191,26 @@ function ContactSection() {
   const isRemoteImage = resolvedImage.startsWith("http");
 
   return (
-    <section className="w-full bg-white px-4 pb-16 pt-[110px] sm:px-6 sm:pb-20 sm:pt-[150px] md:pb-24 md:pt-[180px] xl:pb-28 xl:pt-[250px]">
+    <section className="w-full bg-white px-4 pb-12 pt-[90px] sm:px-6 sm:pb-16 sm:pt-[120px] md:pb-24 md:pt-[180px] xl:pb-28 xl:pt-[250px]">
       <div
-        className="mx-auto flex w-full flex-col items-start lg:flex-row"
-        style={{ maxWidth: "1464px", minHeight: "494px", gap: "20px" }}
+        className="mx-auto flex w-full flex-col items-start gap-8 xl:flex-row xl:gap-5"
+        style={{ maxWidth: "1464px" }}
       >
         {/* Left column */}
-        <div
-          className="flex w-full flex-col justify-center"
-          style={{ maxWidth: "722px", minHeight: "494px" }}
-        >
-          <div
-            className="flex w-full flex-col"
-            style={{ maxWidth: "722px", minHeight: "426px", gap: "26px" }}
-          >
+        <div className="flex w-full flex-col justify-center xl:max-w-[722px]">
+          <div className="flex w-full flex-col gap-5 sm:gap-6 lg:gap-[26px]">
             {/* Eyebrow + heading block */}
             <div className="flex flex-col">
-              <div className="mb-6 flex items-center gap-3">
-                <span className="h-px w-12 bg-[#67003E]" />
+              <div className="mb-4 flex items-center gap-3 sm:mb-6">
+                <span className="h-px w-8 bg-[#67003E] sm:w-12" />
                 <span
                   className="font-poppins font-normal capitalize text-[#67003E]"
-                  style={{ maxWidth: "400px", fontSize: "24px", lineHeight: "100%", letterSpacing: "0px" }}
+                  style={{
+                    maxWidth: "400px",
+                    fontSize: "clamp(16px, 1.2vw + 10px, 24px)",
+                    lineHeight: "100%",
+                    letterSpacing: "0px",
+                  }}
                 >
                   {data.pageTitle}
                 </span>
@@ -212,7 +218,11 @@ function ContactSection() {
 
               <h2
                 className="font-poppins font-bold uppercase text-black"
-                style={{ fontSize: "60px", lineHeight: "112%", letterSpacing: "0px" }}
+                style={{
+                  fontSize: "clamp(30px, 5vw + 10px, 60px)",
+                  lineHeight: "112%",
+                  letterSpacing: "0px",
+                }}
               >
                 {data.heroTitle}
                 <br />
@@ -223,88 +233,103 @@ function ContactSection() {
             {/* Description */}
             <p
               className="font-poppins font-medium capitalize text-[#727272]"
-              style={{ maxWidth: "733px", fontSize: "22px", lineHeight: "120%", letterSpacing: "0px" }}
+              style={{
+                maxWidth: "733px",
+                fontSize: "clamp(16px, 1vw + 10px, 22px)",
+                lineHeight: "120%",
+                letterSpacing: "0px",
+              }}
             >
               {data.heroDescription}
             </p>
 
-            {/* Location / phone stats */}
-            <div className="flex flex-nowrap gap-x-12">
-              <div className="flex shrink-0 flex-col" style={{ gap: "10px" }}>
-                <span className="h-px w-full bg-[#585858]" />
-                <span
-                  className="font-poppins font-normal capitalize text-[#67003E]"
-                  style={{ fontSize: "18px", lineHeight: "100%", letterSpacing: "0px" }}
-                >
-                  Dubai
-                </span>
-                <span
-                  className="font-poppins font-semibold capitalize text-black"
-                  style={{
-                    width: "206px",
-                    height: "62px",
-                    fontSize: "26px",
-                    lineHeight: "120%",
-                    letterSpacing: "0px",
-                  }}
-                >
-                  {data.dubaiLocation}
-                </span>
-              </div>
+            {/* Location / phone stats — stays wrapped until xl (1280px),
+                since 800–1280px didn't have enough width for both this
+                block and the image side-by-side, which was forcing the
+                phone number to overflow under the image */}
+          {/* Location / phone stats — wraps at every screen size now (not just
+    below xl). Forcing all three into one row was overflowing: Dubai
+    (206px) + RAK (206px) + phone number (~230px) + gaps exceeds the
+    722px column even on large screens, so nowrap was pushing the
+    number out past the container and under the image. */}
+<div className="flex flex-wrap gap-x-8 gap-y-6 sm:gap-x-10 xl:gap-x-12">
+  <div className="flex min-w-[140px] flex-1 flex-col" style={{ gap: "10px" }}>
+    <span className="h-px w-full bg-[#585858]" />
+    <span
+      className="font-poppins font-normal capitalize text-[#67003E]"
+      style={{ fontSize: "clamp(14px, 0.8vw + 8px, 18px)", lineHeight: "100%", letterSpacing: "0px" }}
+    >
+      Dubai
+    </span>
+    <span
+      className="font-poppins font-semibold capitalize text-black"
+      style={{
+        maxWidth: "206px",
+        fontSize: "clamp(18px, 1.5vw + 10px, 26px)",
+        lineHeight: "120%",
+        letterSpacing: "0px",
+      }}
+    >
+      {data.dubaiLocation}
+    </span>
+  </div>
 
-              <div className="flex shrink-0 flex-col" style={{ gap: "10px" }}>
-                <span className="h-px w-full bg-[#585858]" />
-                <span
-                  className="font-poppins font-normal capitalize text-[#67003E]"
-                  style={{ fontSize: "18px", lineHeight: "100%", letterSpacing: "0px" }}
-                >
-                  Ras Al Khaimah
-                </span>
-                <span
-                  className="font-poppins font-semibold capitalize text-black"
-                  style={{
-                    width: "206px",
-                    height: "62px",
-                    fontSize: "26px",
-                    lineHeight: "120%",
-                    letterSpacing: "0px",
-                  }}
-                >
-                  {data.rasAlKhaimahLocation}
-                </span>
-              </div>
+  <div className="flex min-w-[140px] flex-1 flex-col" style={{ gap: "10px" }}>
+    <span className="h-px w-full bg-[#585858]" />
+    <span
+      className="font-poppins font-normal capitalize text-[#67003E]"
+      style={{ fontSize: "clamp(14px, 0.8vw + 8px, 18px)", lineHeight: "100%", letterSpacing: "0px" }}
+    >
+      Ras Al Khaimah
+    </span>
+    <span
+      className="font-poppins font-semibold capitalize text-black"
+      style={{
+        maxWidth: "206px",
+        fontSize: "clamp(18px, 1.5vw + 10px, 26px)",
+        lineHeight: "120%",
+        letterSpacing: "0px",
+      }}
+    >
+      {data.rasAlKhaimahLocation}
+    </span>
+  </div>
 
-              <div className="flex shrink-0 flex-col" style={{ gap: "10px" }}>
-                <span className="h-px w-full bg-[#585858]" />
-                <span
-                  className="font-poppins font-normal capitalize text-[#67003E]"
-                  style={{ fontSize: "18px", lineHeight: "100%", letterSpacing: "0px" }}
-                >
-                  {data.directLineLabel}
-                </span>
-                <span
-                  className="font-poppins font-semibold capitalize text-black whitespace-nowrap"
-                  style={{ fontSize: "26px", lineHeight: "120%", letterSpacing: "0px" }}
-                >
-                  {data.directLine}
-                </span>
-              </div>
-            </div>
+  <div className="flex min-w-[140px] flex-1 flex-col" style={{ gap: "10px" }}>
+    <span className="h-px w-full bg-[#585858]" />
+    <span
+      className="font-poppins font-normal capitalize text-[#67003E]"
+      style={{ fontSize: "clamp(14px, 0.8vw + 8px, 18px)", lineHeight: "100%", letterSpacing: "0px" }}
+    >
+      {data.directLineLabel}
+    </span>
+    <span
+      className="font-poppins font-semibold capitalize text-black"
+      style={{
+        fontSize: "clamp(16px, 1.1vw + 8px, 22px)",
+        lineHeight: "120%",
+        letterSpacing: "0px",
+      }}
+    >
+      {data.directLine}
+    </span>
+  </div>
+</div>
           </div>
         </div>
 
         {/* Right column — image */}
-        <div className="relative w-full shrink-0" style={{ maxWidth: "722px" }}>
+        <div className="relative w-full shrink-0 xl:max-w-[722px]">
           <div
-            className="relative w-full overflow-hidden rounded-[30px]"
-            style={{ width: "100%", maxWidth: "722px", height: "494px" }}
+            className="relative w-full overflow-hidden rounded-[20px] sm:rounded-[24px] lg:rounded-[30px]"
+            style={{ aspectRatio: "722 / 494" }}
           >
             <Image
               src={resolvedImage || CONTACT_IMAGE}
               alt={data.heroImageAlt || "Contact Mega Quality Laboratory"}
               fill
               className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 722px"
+              sizes="(max-width: 1280px) 100vw, 722px"
               unoptimized={isRemoteImage}
             />
           </div>

@@ -102,37 +102,37 @@ function resolveImage(path: string): string {
 
 function WhyMegaSkeleton() {
   return (
-    <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
+    <section className="w-full bg-white px-4 py-12 sm:px-6 sm:py-16 md:py-20 xl:py-28">
       <div className="mx-auto w-full max-w-[1464px]">
         {/* Eyebrow Skeleton */}
-        <div className="mb-6 flex items-center gap-3">
-          <span className="h-px w-12 bg-[#67003E]" />
-          <div className="h-6 w-32 animate-pulse rounded bg-gray-200" />
+        <div className="mb-4 flex items-center gap-3 sm:mb-6">
+          <span className="h-px w-8 bg-[#67003E] sm:w-12" />
+          <div className="h-5 w-28 animate-pulse rounded bg-gray-200 sm:h-6 sm:w-32" />
         </div>
 
         {/* Heading Skeleton */}
-        <div className="mb-14">
-          <div className="h-10 w-3/4 animate-pulse rounded bg-gray-200 sm:h-12 md:h-14 xl:h-16" />
+        <div className="mb-8 sm:mb-10 md:mb-14">
+          <div className="h-9 w-3/4 animate-pulse rounded bg-gray-200 sm:h-11 md:h-14 xl:h-16" />
         </div>
 
         {/* Cards Skeleton */}
-        <div className="mx-auto flex flex-wrap justify-center gap-4 lg:gap-6 xl:flex-nowrap xl:justify-between">
+        <div className="mx-auto flex w-full max-w-[1464px] flex-wrap justify-center gap-3 sm:gap-4 lg:gap-6">
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className="flex shrink-0 flex-col rounded-[30px] border border-[#E4E4E4] bg-white"
+              className="flex shrink-0 grow basis-[140px] flex-col rounded-[20px] border border-[#E4E4E4] bg-white sm:rounded-[24px] lg:rounded-[30px]"
               style={{
-                width: "286px",
-                height: "196px",
-                paddingTop: "45px",
-                paddingRight: "33px",
-                paddingBottom: "45px",
-                paddingLeft: "33px",
+                maxWidth: "286px",
+                aspectRatio: "286 / 196",
+                padding: "clamp(20px, 4vw, 45px) clamp(16px, 3vw, 33px)",
                 gap: "10px",
               }}
             >
-              <div className="relative flex shrink-0 items-center justify-center rounded-full border border-dashed border-[#D4A017] animate-pulse bg-gray-200" style={{ width: "63px", height: "63px" }} />
-              <div className="h-5 w-3/4 animate-pulse rounded bg-gray-200" />
+              <div
+                className="relative flex shrink-0 items-center justify-center rounded-full border border-dashed border-[#D4A017] animate-pulse bg-gray-200"
+                style={{ width: "clamp(44px, 6vw, 63px)", height: "clamp(44px, 6vw, 63px)" }}
+              />
+              <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200 sm:h-5" />
             </div>
           ))}
         </div>
@@ -145,14 +145,30 @@ function WhyMega() {
   const [data, setData] = useState<WhyMegaData>(defaultData);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Hover state: each card tracks its OWN active state independently,
-  // so hovering a new card never cuts short another card's 3s linger
+  // Delayed state: shadow + title linger for 3s after mouse leaves.
+  // Each card tracks its own state independently.
   const [activeCards, setActiveCards] = useState<Record<number, boolean>>({});
-  // Tracks pending "revert" timers per card index
   const hideTimeouts = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
 
+  // Transient border: appears the instant hover starts, then fades
+  // back out on its own after a short beat — even while still hovering.
+  const [borderVisible, setBorderVisible] = useState<Record<number, boolean>>({});
+  const borderTimeouts = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
+
   const handleCardEnter = (index: number) => {
-    // Cancel any pending revert timer for this card and activate it immediately
+    // Border: show immediately, then schedule its own fade-out
+    if (borderTimeouts.current[index]) {
+      clearTimeout(borderTimeouts.current[index]);
+      delete borderTimeouts.current[index];
+    }
+    setBorderVisible((prev) => ({ ...prev, [index]: true }));
+
+    borderTimeouts.current[index] = setTimeout(() => {
+      setBorderVisible((prev) => ({ ...prev, [index]: false }));
+      delete borderTimeouts.current[index];
+    }, 400);
+
+    // Shadow + title: activate immediately, cancel any pending revert
     if (hideTimeouts.current[index]) {
       clearTimeout(hideTimeouts.current[index]);
       delete hideTimeouts.current[index];
@@ -161,9 +177,15 @@ function WhyMega() {
   };
 
   const handleCardLeave = (index: number) => {
-    // Keep this card's hovered effect (pink shadow + visible title) for 3s
-    // after the mouse actually leaves, then revert — independent of any
-    // other card being hovered in the meantime
+    // Border: cancel any pending fade timer and hide immediately
+    if (borderTimeouts.current[index]) {
+      clearTimeout(borderTimeouts.current[index]);
+      delete borderTimeouts.current[index];
+    }
+    setBorderVisible((prev) => ({ ...prev, [index]: false }));
+
+    // Shadow + title: keep hovered look for 3s after mouse actually
+    // leaves — independent of any other card being hovered meanwhile
     hideTimeouts.current[index] = setTimeout(() => {
       setActiveCards((prev) => ({ ...prev, [index]: false }));
       delete hideTimeouts.current[index];
@@ -174,6 +196,7 @@ function WhyMega() {
   useEffect(() => {
     return () => {
       Object.values(hideTimeouts.current).forEach(clearTimeout);
+      Object.values(borderTimeouts.current).forEach(clearTimeout);
     };
   }, []);
 
@@ -187,13 +210,18 @@ function WhyMega() {
           let responseData = res.data;
           if (Array.isArray(responseData) && responseData.length > 0) {
             responseData = responseData[0];
-          } else if (responseData.whyMega && Array.isArray(responseData.whyMega) && responseData.whyMega.length > 0) {
+          } else if (
+            responseData.whyMega &&
+            Array.isArray(responseData.whyMega) &&
+            responseData.whyMega.length > 0
+          ) {
             responseData = responseData.whyMega[0];
           }
 
           // Sort features by order
-          const sortedFeatures = (responseData.whyFeatures || [])
-            .sort((a: WhyFeature, b: WhyFeature) => (a.order || 0) - (b.order || 0));
+          const sortedFeatures = (responseData.whyFeatures || []).sort(
+            (a: WhyFeature, b: WhyFeature) => (a.order || 0) - (b.order || 0)
+          );
 
           const whyData: WhyMegaData = {
             _id: responseData._id,
@@ -237,7 +265,7 @@ function WhyMega() {
     return <WhyMegaSkeleton />;
   }
 
-  const { sectionTitle, heroTitle, heroTitleTwo, whyFeatures } = data;
+  const { sectionTitle, whyFeatures } = data;
 
   // Map features with resolved icons
   const featuresWithIcons = whyFeatures.map((feature, index) => {
@@ -258,87 +286,51 @@ function WhyMega() {
   });
 
   return (
-    <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
+    <section className="w-full bg-white px-4 py-12 sm:px-6 sm:py-16 md:py-20 xl:py-28">
       <div className="mx-auto w-full max-w-[1464px]">
         {/* Eyebrow */}
-        <div className="mb-6 flex items-center gap-3">
-          <span className="h-px w-12 bg-[#67003E]" />
-          <span
-            className="font-poppins font-normal capitalize"
-            style={{
-              fontSize: "24px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#67003E",
-            }}
-          >
+        <div className="mb-4 flex items-center gap-3 sm:mb-6">
+          <span className="h-px w-8 bg-[#67003E] sm:w-12" />
+          <span className="font-poppins font-normal capitalize text-[#67003E] text-lg sm:text-xl md:text-2xl leading-none">
             {sectionTitle}
           </span>
         </div>
 
         {/* Heading */}
-        <h2
-          className="
-            mb-14
-            font-poppins
-            font-bold
-            uppercase
-            leading-[112%]
-            text-black
-            text-[32px]
-            sm:text-[40px]
-            md:text-[48px]
-            xl:text-[60px]
-          "
-          style={{
-            letterSpacing: "0px",
-            width: "863px",
-            maxWidth: "100%",
-            height: "134px",
-            transform: "rotate(0deg)",
-            opacity: 1,
-          }}
-        >
-          Why Engineering Teams Choose{" "}
-          <span className="text-[#FFA8D9]">Mega</span>
+        <h2 className="mb-8 max-w-[863px] font-poppins font-bold uppercase leading-[112%] text-black text-[26px] sm:mb-10 sm:text-[36px] md:mb-14 md:text-[44px] xl:text-[60px]">
+          Why Engineering Teams Choose <span className="text-[#FFA8D9]">Mega</span>
         </h2>
 
         {/* Cards */}
-        <div
-          className="mx-auto flex flex-wrap justify-center gap-4 lg:gap-6 xl:flex-nowrap xl:justify-between"
-          style={{
-            width: "1464px",
-            maxWidth: "100%",
-            opacity: 1,
-          }}
-        >
+        <div className="mx-auto flex w-full max-w-[1464px] flex-wrap justify-center gap-3 sm:gap-4 lg:gap-6">
           {featuresWithIcons.map((feature, index) => {
-            const isHovered = !!activeCards[index];
+            const isDelayedActive = !!activeCards[index]; // shadow + title
+            const isBorderVisible = !!borderVisible[index]; // transient border
+
             return (
               <div
                 key={feature._id || feature.title}
                 onMouseEnter={() => handleCardEnter(index)}
                 onMouseLeave={() => handleCardLeave(index)}
-                className="flex shrink-0 flex-col rounded-[30px] border border-[#E4E4E4] bg-white transition-shadow duration-300 ease-out"
+                className="flex shrink-0 grow basis-[140px] cursor-pointer flex-col rounded-[20px] border bg-white transition-[box-shadow,border-color] duration-300 ease-out sm:rounded-[24px] lg:rounded-[30px]"
                 style={{
-                  width: "286px",
-                  height: "196px",
-                  paddingTop: "45px",
-                  paddingRight: "33px",
-                  paddingBottom: "45px",
-                  paddingLeft: "33px",
+                  maxWidth: "286px",
+                  aspectRatio: "286 / 196",
+                  padding: "clamp(20px, 4vw, 45px) clamp(16px, 3vw, 33px)",
                   gap: "10px",
-                  boxShadow: isHovered
-                    ? "0 6px 20px rgba(255, 61, 158, 0.14)"
-                    : "0 0 0 rgba(255, 61, 158, 0)",
-                }}
+                  borderColor: isBorderVisible ? "#D9D9D9" : "#D9D9D9",
+                     borderWidth: isBorderVisible ? "2px" : "1px",
+                boxShadow: isDelayedActive
+  ? "0 0 10px rgba(252, 1, 152, 0.35)"
+  : "0 0 0 rgba(252, 1, 152, 0)",
+                }} 
               >
                 {/* Icon */}
                 <div
-                  className="relative flex shrink-0 items-center justify-center rounded-full border border-dashed border-[#D4A017] bg-white overflow-hidden"
+                  className="relative flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-dashed border-[#D4A017] bg-white"
                   style={{
-                    width: "63px",
-                    height: "63px",
+                    width: "clamp(44px, 6vw, 63px)",
+                    height: "clamp(44px, 6vw, 63px)",
                     borderWidth: "1px",
                   }}
                 >
@@ -348,18 +340,17 @@ function WhyMega() {
                     fill
                     className="object-contain p-1.5"
                     sizes="63px"
-                    unoptimized={typeof feature.iconSrc === 'string' && feature.iconSrc.startsWith('http')}
+                    unoptimized={typeof feature.iconSrc === "string" && feature.iconSrc.startsWith("http")}
                   />
                 </div>
 
                 {/* Title */}
                 <h3
-                  className="font-poppins font-semibold uppercase text-black mt-2 transition-opacity duration-300 ease-out"
+                  className="mt-2 font-poppins font-semibold uppercase text-black transition-opacity duration-300 ease-out"
                   style={{
-                    fontSize: "16px",
+                    fontSize: "clamp(13px, 1.3vw, 16px)",
                     lineHeight: "120%",
-                    letterSpacing: "0px",
-                    opacity: isHovered ? 1 : 0,
+                    opacity: isDelayedActive ? 1 : 0,
                   }}
                 >
                   {feature.title}

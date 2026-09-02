@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import LOGO from "../../../public/images/Logo.png"
 import { Button } from "../common/Button";
+import Link from "next/link";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -70,13 +71,18 @@ function Navbar() {
         </ul>
 
         {/* CTA button: same breakpoint as the links so they always appear together */}
-        <Button
+        <Link href={"/contact"}>
+      <Button
           type="button"
           variant="navbarCta"
           className="hidden xl:inline-flex"
         >
           Request a Test
         </Button>
+        </Link>
+
+        
+        
 
         {/* Mobile menu toggle: covers everything below xl, so nothing gets squeezed */}
         <button
@@ -128,13 +134,19 @@ function Navbar() {
               {link.label}
             </a>
           ))}
-          <Button
-            type="button"
-            variant="navbarCta"
-            className="w-full justify-center"
-          >
-            Request a Test
-          </Button>
+          <Link
+  href="/contact"
+  className="w-full"
+>
+  <Button
+    type="button"
+    variant="navbarCta"
+    className="w-full justify-center"
+  >
+    Request a Test
+  </Button>
+</Link>
+         
         </div>
       )}
     </nav>

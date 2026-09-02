@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import api from "@/lib/axios";
-import REGISTRATION_BADGE from "../../../public/images/accredited-badge.png";
+import REGISTRATION_BADGE from "../../../public/images/sharjahcertification.png";
 
 // ================= TYPES =================
 
@@ -83,7 +83,8 @@ const defaultData: CertificatePageData = {
     mainTitle: "ACCREDITED FOR CONFIDENCE.",
     mainTitleTwo: "CONFIDENCE.",
     standardTitle: "ISO/IEC 17025:2017",
-    description: "The Supplied Accreditation Documentation Identifies Certificate LB-TEST-271 And States Validity From 19 February 2025 To 18 February 2028.",
+    description:
+      "The Supplied Accreditation Documentation Identifies Certificate LB-TEST-271 And States Validity From 19 February 2025 To 18 February 2028.",
     inlineLinks: [],
     tableHeaders: ["CERTIFICATE", "INITIAL DATE", "VALID UNTIL"],
     tableRows: [],
@@ -141,9 +142,7 @@ function RegistrationSectionSkeleton() {
           <div className="mt-2 h-14 w-1/3 animate-pulse rounded bg-gray-200" />
         </div>
         <div className="flex flex-col lg:flex-row" style={{ gap: "20px", maxWidth: "1465px" }}>
-          {/* sm+ card shape */}
           <div className="hidden w-full max-w-[722px] aspect-[722/449] animate-pulse rounded-[30px] bg-gray-200 sm:block" />
-          {/* mobile card shape — natural height, not tied to the 722/449 ratio */}
           <div className="h-[400px] w-full animate-pulse rounded-[30px] bg-gray-200 sm:hidden" />
           <div className="flex-1 flex flex-col gap-4">
             <div className="h-10 w-3/4 animate-pulse rounded bg-gray-200" />
@@ -228,28 +227,27 @@ function RegistrationCertificateModal({
             <Image src={REGISTRATION_BADGE} alt="Registration badge" fill className="object-contain" />
           </div>
 
-          <h4 className="mt-8 font-poppins text-2xl font-bold uppercase text-black">
-            {programName}
-          </h4>
+          {/* Content block — spec: 468 x 181, gap 10px (scaled to modal width) */}
+          <div
+            className="mx-auto mt-8 flex w-full flex-col items-center"
+            style={{ maxWidth: "468px", minHeight: "clamp(120px, 18vw, 181px)", gap: "10px" }}
+          >
+            <h4 className="font-poppins text-2xl font-bold uppercase text-black">{programName}</h4>
 
-          <p className="mt-3 font-poppins text-lg font-medium capitalize text-[#929292]">
-            {labName}
-          </p>
+            <p className="font-poppins text-lg font-medium capitalize text-[#929292]">{labName}</p>
 
-          <p className="mt-3 font-poppins text-xl font-semibold uppercase text-black">
-            {certificateNumber}
-          </p>
+            <p className="font-poppins text-xl font-semibold uppercase text-black">{certificateNumber}</p>
 
-          <p className="mt-2 font-poppins text-base font-medium text-[#929292]">
-            Issued {issuedDate} · Expiry {expiryDate}
-          </p>
+            <p className="font-poppins text-base font-medium text-[#727272]">
+              Issued {issuedDate} · Expiry {expiryDate}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* ============================================================ */}
       {/* Below sm (phones) — same content, sized to fit instead of the  */}
       {/* 923:573 ratio, which would clip this card's five text lines    */}
-      {/* this narrow (same reasoning as the mini registration card).    */}
       {/* ============================================================ */}
       <div
         className="relative w-full max-w-[420px] bg-[#FFFCEB] sm:hidden"
@@ -279,21 +277,17 @@ function RegistrationCertificateModal({
             <Image src={REGISTRATION_BADGE} alt="Registration badge" fill className="object-contain" />
           </div>
 
-          <h4 className="mt-6 font-poppins text-base font-bold uppercase text-black">
-            {programName}
-          </h4>
+          <div className="mt-6 flex w-full flex-col items-center" style={{ gap: "6px" }}>
+            <h4 className="font-poppins text-base font-bold uppercase text-black">{programName}</h4>
 
-          <p className="mt-2 font-poppins text-xs font-medium capitalize text-[#929292]">
-            {labName}
-          </p>
+            <p className="font-poppins text-xs font-medium capitalize text-[#929292]">{labName}</p>
 
-          <p className="mt-3 font-poppins text-sm font-semibold uppercase text-black">
-            {certificateNumber}
-          </p>
+            <p className="font-poppins text-sm font-semibold uppercase text-black">{certificateNumber}</p>
 
-          <p className="mt-1 font-poppins text-xs font-medium text-[#929292]">
-            Issued {issuedDate} · Expiry {expiryDate}
-          </p>
+            <p className="font-poppins text-xs font-medium text-[#727272]">
+              Issued {issuedDate} · Expiry {expiryDate}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -359,27 +353,13 @@ function RegistrationSection() {
   const { sharjahRegistration } = data;
 
   // Get values from table rows
-  const registrationNo = getTableValue(sharjahRegistration.tableRows, "REGISTRATION CERTIFICATE") || sharjahRegistration.certificateNumber;
+  const registrationNo =
+    getTableValue(sharjahRegistration.tableRows, "REGISTRATION CERTIFICATE") || sharjahRegistration.certificateNumber;
   const issuedDate = getTableValue(sharjahRegistration.tableRows, "ISSUED") || sharjahRegistration.issuedDate;
   const validUntilDate = getTableValue(sharjahRegistration.tableRows, "VALID UNTIL") || sharjahRegistration.expiryDate;
 
-  // Format dates for display (convert from DD/MM/YYYY to DD MMM YYYY if needed)
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    // If already in "DD MMM YYYY" format, return as is
-    if (dateStr.includes(" ")) return dateStr;
-    // Convert "DD/MM/YYYY" to "DD MMM YYYY"
-    const parts = dateStr.split("/");
-    if (parts.length === 3) {
-      const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-      const month = months[parseInt(parts[1]) - 1] || parts[1];
-      return `${parts[0]} ${month} ${parts[2]}`;
-    }
-    return dateStr;
-  };
-
-  const formattedIssuedDate = formatDate(issuedDate);
-  const formattedValidDate = formatDate(validUntilDate);
+  // Dates are kept in their raw DD/MM/YYYY form (no reformatting to
+  // "DD MMM YYYY") to match the reference design's slash-date style.
 
   return (
     <>
@@ -413,10 +393,7 @@ function RegistrationSection() {
           </h2>
 
           {/* Row: card + content */}
-          <div
-            className="flex flex-col lg:flex-row"
-            style={{ gap: "20px", maxWidth: "1465px" }}
-          >
+          <div className="flex flex-col lg:flex-row" style={{ gap: "20px", maxWidth: "1465px" }}>
             {/* ============================================================ */}
             {/* sm and up — original fixed-ratio registration card, unchanged */}
             {/* ============================================================ */}
@@ -445,66 +422,74 @@ function RegistrationSection() {
               >
                 {/* Spinning registration badge */}
                 <div className="relative h-[130px] w-[130px] animate-[spin_16s_linear_infinite] sm:h-[150px] sm:w-[150px]">
-                  <Image
-                    src={REGISTRATION_BADGE}
-                    alt="Registration badge"
-                    fill
-                    className="object-contain"
-                  />
+                  <Image src={REGISTRATION_BADGE} alt="Registration badge" fill className="object-contain" />
                 </div>
 
-                <h4
-                  className="mt-6 font-poppins font-bold uppercase text-black"
+                {/* ==========================================================
+                    Content block after badge — spec: width 468, height 181,
+                    gap 10px. Card is 722px wide, so 468/722 ≈ 64.82% keeps
+                    this block scaling in lockstep with the card at any size.
+                    Height is auto (with a scaled min-height as a guide) so
+                    wrapped text never gets clipped on narrower cards.
+                ========================================================== */}
+                <div
+                  className="mt-6 flex w-full flex-col items-center justify-center text-center"
                   style={{
-                    fontSize: "clamp(16px, 1.2vw + 10px, 24px)",
-                    lineHeight: "120%",
-                    letterSpacing: "0px",
+                    maxWidth: "64.82%",
+                    minHeight: "clamp(90px, 25.13cqw, 181px)",
+                    gap: "10px",
                   }}
                 >
-                  {sharjahRegistration.programName}
-                </h4>
+                  <h4
+                    className="font-poppins font-bold uppercase text-black"
+                    style={{
+                      fontSize: "clamp(16px, 1.2vw + 10px, 24px)",
+                      lineHeight: "120%",
+                      letterSpacing: "0px",
+                    }}
+                  >
+                    {sharjahRegistration.programName}
+                  </h4>
 
-                <p
-                  className="mt-2 font-poppins font-medium capitalize text-[#929292]"
-                  style={{
-                    fontSize: "clamp(12px, 0.8vw + 8px, 17px)",
-                    lineHeight: "120%",
-                    letterSpacing: "0px",
-                  }}
-                >
-                  {sharjahRegistration.labName}
-                </p>
+                  <p
+                    className="font-poppins font-medium capitalize text-[#929292]"
+                    style={{
+                      fontSize: "clamp(12px, 0.8vw + 8px, 17px)",
+                      lineHeight: "120%",
+                      letterSpacing: "0px",
+                    }}
+                  >
+                    {sharjahRegistration.labName}
+                  </p>
 
-                <p
-                  className="mt-3 font-poppins font-semibold uppercase text-black"
-                  style={{
-                    fontSize: "clamp(14px, 1vw + 8px, 20px)",
-                    lineHeight: "120%",
-                    letterSpacing: "0px",
-                  }}
-                >
-                  {sharjahRegistration.certificateNumber}
-                </p>
+                  <p
+                    className="font-poppins font-semibold uppercase text-black"
+                    style={{
+                      fontSize: "clamp(14px, 1vw + 8px, 20px)",
+                      lineHeight: "120%",
+                      letterSpacing: "0px",
+                    }}
+                  >
+                    {sharjahRegistration.certificateNumber}
+                  </p>
 
-                <p
-                  className="mt-1 font-poppins font-medium text-[#929292]"
-                  style={{
-                    fontSize: "clamp(11px, 0.7vw + 8px, 15px)",
-                    lineHeight: "120%",
-                    letterSpacing: "0px",
-                  }}
-                >
-                  Issued {formattedIssuedDate} · Expiry {formattedValidDate}
-                </p>
+                  <p
+                    className="font-poppins font-medium text-[#727272]"
+                    style={{
+                      fontSize: "clamp(11px, 0.7vw + 8px, 15px)",
+                      lineHeight: "120%",
+                      letterSpacing: "0px",
+                    }}
+                  >
+                    Issued {sharjahRegistration.issuedDate} · Expiry {sharjahRegistration.expiryDate}
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* ============================================================ */}
             {/* Below sm (phones) — same badge, colors, and copy, sized to its  */}
-            {/* content instead of the 722:449 ratio. This card packs five     */}
-            {/* text lines under the badge, so it's the most overflow-prone    */}
-            {/* of these cards below ~600px container width; forcing the      */}
-            {/* fixed ratio there would clip the bottom lines.                 */}
+            {/* content instead of the 722:449 ratio.                          */}
             {/* ============================================================ */}
             <div
               className="w-full rounded-[30px] bg-[#FFFCEB] sm:hidden"
@@ -518,29 +503,26 @@ function RegistrationSection() {
                 style={{ border: "1px solid #A9A9A9" }}
               >
                 <div className="relative h-[120px] w-[120px] animate-[spin_16s_linear_infinite]">
-                  <Image
-                    src={REGISTRATION_BADGE}
-                    alt="Registration badge"
-                    fill
-                    className="object-contain"
-                  />
+                  <Image src={REGISTRATION_BADGE} alt="Registration badge" fill className="object-contain" />
                 </div>
 
-                <h4 className="mt-6 font-poppins text-base font-bold uppercase text-black">
-                  {sharjahRegistration.programName}
-                </h4>
+                <div className="mt-6 flex w-full flex-col items-center" style={{ gap: "6px" }}>
+                  <h4 className="font-poppins text-base font-bold uppercase text-black">
+                    {sharjahRegistration.programName}
+                  </h4>
 
-                <p className="mt-2 font-poppins text-xs font-medium capitalize text-[#929292]">
-                  {sharjahRegistration.labName}
-                </p>
+                  <p className="font-poppins text-xs font-medium capitalize text-[#929292]">
+                    {sharjahRegistration.labName}
+                  </p>
 
-                <p className="mt-3 font-poppins text-sm font-semibold uppercase text-black">
-                  {sharjahRegistration.certificateNumber}
-                </p>
+                  <p className="font-poppins text-sm font-semibold uppercase text-black">
+                    {sharjahRegistration.certificateNumber}
+                  </p>
 
-                <p className="mt-1 font-poppins text-xs font-medium text-[#929292]">
-                  Issued {formattedIssuedDate} · Expiry {formattedValidDate}
-                </p>
+                  <p className="font-poppins text-xs font-medium text-[#727272]">
+                    Issued {issuedDate} · Expiry {validUntilDate}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -599,7 +581,7 @@ function RegistrationSection() {
                     className="font-poppins font-bold uppercase text-black"
                     style={{ fontSize: "clamp(16px, 1.2vw + 10px, 22px)", lineHeight: "120%", letterSpacing: "0px" }}
                   >
-                    {formattedIssuedDate}
+                    {issuedDate}
                   </span>
                 </div>
 
@@ -614,16 +596,16 @@ function RegistrationSection() {
                     className="font-poppins font-bold uppercase text-black"
                     style={{ fontSize: "clamp(16px, 1.2vw + 10px, 22px)", lineHeight: "120%", letterSpacing: "0px" }}
                   >
-                    {formattedValidDate}
+                    {validUntilDate}
                   </span>
                 </div>
               </div>
 
-              {/* CTA button — now opens the certificate modal instead of navigating */}
+              {/* CTA button — opens the certificate modal */}
               <button
                 type="button"
                 onClick={() => setIsCertModalOpen(true)}
-                className="inline-flex w-fit items-center justify-center gap-[10px] rounded-[20px] bg-[#67003E] text-white transition-opacity hover:opacity-90"
+                className="inline-flex w-fit items-center justify-center gap-[10px] rounded-[20px] bg-[#67003E] hover:bg-[#4A002C] cursor-pointer text-white transition-opacity hover:opacity-90"
                 style={{
                   paddingTop: "clamp(12px, 1vw + 8px, 15px)",
                   paddingRight: "clamp(24px, 2.5vw + 10px, 42px)",
@@ -649,8 +631,8 @@ function RegistrationSection() {
           programName={sharjahRegistration.programName}
           labName={sharjahRegistration.labName}
           certificateNumber={sharjahRegistration.certificateNumber}
-          issuedDate={formattedIssuedDate}
-          expiryDate={formattedValidDate}
+          issuedDate={issuedDate}
+          expiryDate={validUntilDate}
         />
       )}
     </>

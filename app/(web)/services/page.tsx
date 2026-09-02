@@ -9,7 +9,7 @@ export default function AboutPage() {
     <main>
       <WhatWeTestBanner />
      <ServiceOverlayCards/>
-      <Footer/>
+     
     </main>
   );
 }

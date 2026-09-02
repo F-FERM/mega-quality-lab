@@ -52,7 +52,8 @@ const defaultData: ManagementProcessData = {
   managementSubtitle: "EXPERIENCED",
   managementSubtitleTwo: "PEOPLE.",
   managementSubtitleThree: "RELIABLE RESULTS.",
-  managementDescription: "Abdullah Mohammad Has Over 10 Years Of Experience In Geotechnical And Materials Testing Laboratory Operations, Including Quality-Control Activities Under ISO 17025:2017 And Management Of Major Projects In Dubai And Abu Dhabi.",
+  managementDescription:
+    "Abdullah Mohammad Has Over 10 Years Of Experience In Geotechnical And Materials Testing Laboratory Operations, Including Quality-Control Activities Under ISO 17025:2017 And Management Of Major Projects In Dubai And Abu Dhabi.",
   managingDirectorName: "ABDULLAH MOHAMMAD",
   managingDirectorTitle: "MANAGING DIRECTOR",
   managingDirectorImage: "",
@@ -77,14 +78,14 @@ function resolveImage(path: string): string {
 
 function ManagementSectionSkeleton() {
   return (
-    <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
-      <div className="mx-auto grid w-full max-w-[1464px] grid-cols-1 items-center lg:grid-cols-[574px_1fr]" style={{ gap: "20px" }}>
+    <section className="w-full bg-white px-4 py-12 sm:px-6 sm:py-16 md:py-20 xl:py-28">
+      <div className="mx-auto grid w-full max-w-[1464px] grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(320px,574px)_1fr] lg:gap-6 xl:gap-10">
         {/* Left - Image Skeleton */}
-        <div className="relative w-full overflow-hidden rounded-[30px]" style={{ maxWidth: "574px", height: "587px" }}>
-          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-          <div className="absolute inset-x-0 bottom-0 bg-[#7D7D7D] px-6 py-5 sm:px-8 sm:py-6">
-            <div className="mb-1 h-4 w-32 animate-pulse rounded bg-gray-300" />
-            <div className="h-7 w-48 animate-pulse rounded bg-gray-300" />
+        <div className="relative mx-auto w-full max-w-[420px] overflow-hidden rounded-[20px] sm:max-w-[480px] sm:rounded-[24px] lg:max-w-[574px] lg:rounded-[30px]">
+          <div className="aspect-[574/587] w-full bg-gray-200 animate-pulse" />
+          <div className="absolute inset-x-0 bottom-0 bg-[#7D7D7D] px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5">
+            <div className="mb-1 h-3 w-24 animate-pulse rounded bg-gray-300 sm:h-4 sm:w-32" />
+            <div className="h-5 w-36 animate-pulse rounded bg-gray-300 sm:h-6 sm:w-44 md:h-7 md:w-48" />
           </div>
         </div>
 
@@ -92,18 +93,18 @@ function ManagementSectionSkeleton() {
         <div className="flex w-full flex-col">
           <div className="mb-3 flex items-center gap-3">
             <span className="h-px w-8 bg-[#67003E]" />
-            <div className="h-6 w-32 animate-pulse rounded bg-gray-200" />
+            <div className="h-5 w-28 animate-pulse rounded bg-gray-200 sm:h-6 sm:w-32" />
           </div>
-          <div className="mb-2">
-            <div className="h-10 w-3/4 animate-pulse rounded bg-gray-200 sm:h-12 md:h-14 xl:h-16" />
-            <div className="mt-2 h-10 w-1/2 animate-pulse rounded bg-gray-200 sm:h-12 md:h-14 xl:h-16" />
+          <div className="mb-3">
+            <div className="h-8 w-3/4 animate-pulse rounded bg-gray-200 sm:h-10 md:h-12 xl:h-16" />
+            <div className="mt-2 h-8 w-1/2 animate-pulse rounded bg-gray-200 sm:h-10 md:h-12 xl:h-16" />
           </div>
-          <div className="mb-2 space-y-2">
-            <div className="h-6 w-full animate-pulse rounded bg-gray-200" />
-            <div className="h-6 w-5/6 animate-pulse rounded bg-gray-200" />
-            <div className="h-6 w-4/5 animate-pulse rounded bg-gray-200" />
+          <div className="mb-3 space-y-2">
+            <div className="h-5 w-full animate-pulse rounded bg-gray-200 sm:h-6" />
+            <div className="h-5 w-5/6 animate-pulse rounded bg-gray-200 sm:h-6" />
+            <div className="h-5 w-4/5 animate-pulse rounded bg-gray-200 sm:h-6" />
           </div>
-          <div className="h-6 w-3/4 animate-pulse rounded bg-gray-200" />
+          <div className="h-5 w-3/4 animate-pulse rounded bg-gray-200 sm:h-6" />
         </div>
       </div>
     </section>
@@ -120,17 +121,20 @@ function ManagementSection() {
         const res = await api.get("/home-management-process");
 
         if (res.data && typeof res.data === "object") {
-          // Check if response is array or single object
           let responseData = res.data;
           if (Array.isArray(responseData) && responseData.length > 0) {
             responseData = responseData[0];
-          } else if (responseData.managementProcess && Array.isArray(responseData.managementProcess) && responseData.managementProcess.length > 0) {
+          } else if (
+            responseData.managementProcess &&
+            Array.isArray(responseData.managementProcess) &&
+            responseData.managementProcess.length > 0
+          ) {
             responseData = responseData.managementProcess[0];
           }
 
-          // Sort process steps by order
-          const sortedSteps = (responseData.processSteps || [])
-            .sort((a: ProcessStep, b: ProcessStep) => (a.order || 0) - (b.order || 0));
+          const sortedSteps = (responseData.processSteps || []).sort(
+            (a: ProcessStep, b: ProcessStep) => (a.order || 0) - (b.order || 0)
+          );
 
           const managementData: ManagementProcessData = {
             _id: responseData._id,
@@ -183,56 +187,33 @@ function ManagementSection() {
     additionalInfo,
   } = data;
 
-  // Determine which image to use
   const imageSrc = managingDirectorImage ? resolveImage(managingDirectorImage) : MANAGER_FALLBACK_IMG;
 
   return (
-    <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
-      <div
-        className="mx-auto grid w-full max-w-[1464px] grid-cols-1 items-center lg:grid-cols-[574px_1fr]"
-        style={{ gap: "20px" }}
-      >
+    <section className="w-full bg-white px-4 py-12 sm:px-6 sm:py-16 md:py-20 xl:py-28">
+      <div className="mx-auto grid w-full max-w-[1464px] grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(320px,574px)_1fr] lg:gap-6 xl:gap-10">
         {/* =====================================================
             LEFT — Photo card with overlay
-            width: 574, height: 587, rounded-30
+            Responsive: fluid width via aspect-ratio, capped at 574px
         ====================================================== */}
-        <div
-          className="relative w-full overflow-hidden rounded-[30px]"
-          style={{
-            maxWidth: "574px",
-            height: "587px",
-          }}
-        >
-          <Image
-            src={imageSrc}
-            alt={managingDirectorImageAlt || `${managingDirectorName} - ${managingDirectorTitle}`}
-            fill
-            className="object-cover"
-            sizes="(max-width: 1024px) 90vw, 574px"
-            unoptimized={typeof imageSrc === 'string' && imageSrc.startsWith('http')}
-          />
+        <div className="relative mx-auto w-full max-w-[420px] overflow-hidden rounded-[20px] sm:max-w-[480px] sm:rounded-[24px] lg:max-w-[574px] lg:rounded-[30px]">
+          <div className="relative aspect-[574/587] w-full">
+            <Image
+              src={imageSrc}
+              alt={managingDirectorImageAlt || `${managingDirectorName} - ${managingDirectorTitle}`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 90vw, (max-width: 1024px) 60vw, 574px"
+              unoptimized={typeof imageSrc === "string" && imageSrc.startsWith("http")}
+            />
+          </div>
 
           {/* Bottom info bar — pinned flush to the card's bottom edge */}
-          <div className="absolute inset-x-0 bottom-0 bg-[#7D7D7D] px-6 py-5 sm:px-8 sm:py-6">
-            <span
-              className="mb-1 block font-poppins font-semibold uppercase"
-              style={{
-                fontSize: "14px",
-                lineHeight: "100%",
-                letterSpacing: "0.5px",
-                color: "#67003E",
-              }}
-            >
+          <div className="absolute inset-x-0 bottom-0 bg-[#7D7D7D] px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5">
+            <span className="mb-1 block font-poppins font-medium uppercase text-[#67003E] text-xs tracking-wide sm:text-sm md:text-base lg:text-[18px] leading-none">
               {managingDirectorTitle}
             </span>
-            <span
-              className="block font-poppins font-bold uppercase text-white"
-              style={{
-                fontSize: "26px",
-                lineHeight: "120%",
-                letterSpacing: "0px",
-              }}
-            >
+            <span className="block font-poppins font-bold uppercase text-white text-lg sm:text-xl md:text-2xl lg:text-[26px] leading-[120%]">
               {managingDirectorName}
             </span>
           </div>
@@ -241,67 +222,29 @@ function ManagementSection() {
         {/* =====================================================
             RIGHT — Content
         ====================================================== */}
-        <div className="flex w-full flex-col">
+        <div className="flex w-full flex-col text-center lg:text-left">
           {/* Eyebrow */}
-          <div className="mb-3 flex items-center gap-3">
+          <div className="mb-3 flex items-center justify-center gap-3 lg:justify-start">
             <span className="h-px w-8 bg-[#67003E]" />
-            <span
-              className="font-poppins font-normal capitalize"
-              style={{
-                fontSize: "24px",
-                lineHeight: "100%",
-                letterSpacing: "0px",
-                color: "#67003E",
-              }}
-            >
+            <span className="font-poppins font-normal capitalize text-[#67003E] text-lg sm:text-xl md:text-2xl leading-none">
               {managementTitle}
             </span>
           </div>
 
           {/* Heading */}
-          <h2
-            className="
-              mb-2
-              font-poppins
-              font-bold
-              uppercase
-              leading-[112%]
-              text-black
-              text-[32px]
-              sm:text-[40px]
-              md:text-[48px]
-              xl:text-[60px]
-            "
-            style={{ letterSpacing: "0px" }}
-          >
+          <h2 className="mb-3 font-poppins font-bold uppercase leading-[112%] text-black text-[28px] sm:text-[36px] md:text-[44px] lg:text-[52px] xl:text-[60px]">
             {managementSubtitle} <span className="text-[#FFA8D9]">{managementSubtitleTwo}</span>
             <br />
             {managementSubtitleThree}
           </h2>
 
           {/* Bio paragraph */}
-          <p
-            className="mb-2 font-poppins font-medium capitalize"
-            style={{
-              fontSize: "22px",
-              lineHeight: "120%",
-              letterSpacing: "0px",
-              color: "#727272",
-            }}
-          >
+          <p className="mb-3 font-poppins font-medium capitalize text-[#727272] text-base sm:text-lg md:text-xl leading-[120%]">
             {managementDescription}
           </p>
 
           {/* Note */}
-          <p
-            className="font-poppins font-medium capitalize"
-            style={{
-              fontSize: "18px",
-              lineHeight: "120%",
-              letterSpacing: "0px",
-              color: "#727272",
-            }}
-          >
+          <p className="font-poppins font-medium capitalize text-[#727272] text-sm sm:text-base md:text-lg leading-[120%]">
             {additionalInfo}
           </p>
         </div>

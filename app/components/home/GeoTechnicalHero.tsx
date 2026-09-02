@@ -88,7 +88,7 @@ function resolveImage(path: string): string {
 
 function GeotechnicalSkeleton() {
   return (
-    <section className="w-full">
+    <section className="w-full mb-16 sm:mb-20 md:mb-24 xl:mb-28">
       {/* Hero Skeleton */}
       <div className="relative w-full overflow-hidden">
         <div className="relative h-[644px] w-full bg-gray-200 animate-pulse" />
@@ -232,7 +232,7 @@ function GeotechnicalHero() {
   const serviceTitles = services.map((service) => service.title);
 
  return (
-    <section className="w-full">
+    <section className="w-full mb-16 sm:mb-20 md:mb-24 xl:mb-28">
       {/* =====================================================
           HERO — background image (absolute layer) + content in
           normal flow. Breakpoint pattern matches AboutLab:

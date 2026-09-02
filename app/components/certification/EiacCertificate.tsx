@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import api from "@/lib/axios";
-import ACCREDITED_BADGE from "../../../public/images/accredited-badge.png";
+import ACCREDITED_BADGE from "../../../public/images/certificationbadge1.png";
 
 // ================= TYPES =================
 

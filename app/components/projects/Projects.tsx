@@ -220,61 +220,7 @@ function ProjectOverlayCards() {
   return (
     <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
       <div className="mx-auto w-full max-w-[1464px]">
-        {/* Eyebrow */}
-        <div className="mb-6 flex items-center gap-3">
-          <span className="h-px w-12 bg-[#67003E]" />
-          <span
-            className="font-poppins font-normal capitalize"
-            style={{
-              fontSize: "24px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#67003E",
-            }}
-          >
-            {sectionTitle}
-          </span>
-        </div>
-
-        {/* Heading */}
-        <h2
-          className="
-            mb-6
-            font-poppins
-            font-bold
-            uppercase
-            leading-[112%]
-            text-black
-            text-[32px]
-            sm:text-[40px]
-            md:text-[48px]
-            xl:text-[60px]
-          "
-          style={{ letterSpacing: "0px" }}
-        >
-          {heroTitle} <span className="text-[#FFA8D9]">{heroSubtitle}</span>
-        </h2>
-
-        {/* Sub copy */}
-        <p
-          className="
-            mb-12
-            max-w-[668px]
-            font-poppins
-            font-medium
-            capitalize
-            text-black
-            text-lg
-            sm:text-xl
-            xl:text-[22px]
-          "
-          style={{
-            lineHeight: "120%",
-            letterSpacing: "0px",
-          }}
-        >
-          {description}
-        </p>
+        
 
         {/* Cards — 470 x 520 spec, flat #00000059 overlay */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -377,37 +323,7 @@ function ProjectOverlayCards() {
           ))}
         </div>
 
-        {/* View all button */}
-        <div className="mt-12 flex justify-center">
-          <Link
-            href="/projects"
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-full
-              bg-[#67003E]
-              px-6
-              py-3.5
-              sm:px-8
-              sm:py-4
-              font-poppins
-              font-medium
-              capitalize
-              text-white
-              transition-colors
-              hover:bg-[#4d002e]
-            "
-            style={{
-              fontSize: "clamp(16px, 3.5vw, 18px)",
-              lineHeight: "120%",
-              letterSpacing: "0px",
-            }}
-          >
-            View All Projects
-            <ArrowRight className="h-5 w-5 shrink-0" strokeWidth={2} />
-          </Link>
-        </div>
+       
       </div>
     </section>
   );

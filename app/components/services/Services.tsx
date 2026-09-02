@@ -324,37 +324,7 @@ function ServiceOverlayCards() {
           ))}
         </div>
 
-        {/* View all button */}
-        <div className="mt-12 flex justify-center">
-          <Link
-            href="/services"
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-full
-              bg-[#67003E]
-              px-6
-              py-3.5
-              sm:px-8
-              sm:py-4
-              font-poppins
-              font-medium
-              capitalize
-              text-white
-              transition-colors
-              hover:bg-[#4d002e]
-            "
-            style={{
-              fontSize: "clamp(16px, 3.5vw, 18px)",
-              lineHeight: "120%",
-              letterSpacing: "0px",
-            }}
-          >
-            View All Service
-            <ArrowRight className="h-5 w-5 shrink-0" strokeWidth={2} />
-          </Link>
-        </div>
+     
       </div>
     </section>
   );
