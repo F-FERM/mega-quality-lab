@@ -84,6 +84,13 @@ const defaultData: QualityEHSData = {
   isActive: true,
 };
 
+// Card colors (by card position)
+const cardColors = [
+  { background: "#C9000033", border: "#C90000" }, // 1st - red
+  { background: "#004AE933", border: "#004AE9" }, // 2nd - blue
+  { background: "#0D9D0033", border: "#0D9D00" }, // 3rd - green
+];
+
 /**
  * Highlights the word "System" (optionally followed by punctuation) in pink.
  * Case-insensitive, works regardless of where the word falls or whether the
@@ -136,10 +143,14 @@ function QualitySystemSkeleton() {
 
         {/* Cards Skeleton */}
         <div className="grid w-full grid-cols-1 gap-x-5 gap-y-8 sm:gap-y-10 md:grid-cols-3 xl:gap-y-12">
-          {[1, 2, 3].map((i) => (
+          {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="flex min-w-0 flex-col justify-start rounded-[40px] border border-[#D9D9D9] bg-white p-6 sm:p-8 xl:p-10"
+              className="flex min-w-0 flex-col justify-start rounded-[40px] border p-6 sm:p-8 xl:p-10"
+              style={{
+                backgroundColor: cardColors[i].background,
+                borderColor: cardColors[i].border,
+              }}
             >
               <div className="mb-6 h-6 w-24 animate-pulse rounded bg-gray-200 sm:mb-7 xl:mb-8" />
               <div className="mb-2 h-8 w-3/4 animate-pulse rounded bg-gray-200 sm:mb-3" />
@@ -232,7 +243,7 @@ function QualitySystem() {
               color: "#67003E",
             }}
           >
-           Material Testing
+            Material Testing
           </span>
           <span className="h-px w-8 shrink-0 bg-[#67003E] sm:w-12" />
         </div>
@@ -270,63 +281,71 @@ function QualitySystem() {
 
         {/* Cards */}
         <div className="grid w-full grid-cols-1 gap-x-5 gap-y-8 sm:gap-y-10 md:grid-cols-3 xl:gap-y-12">
-          {pillars.map((pillar) => (
-            <div
-              key={pillar._id || pillar.pillarNumber}
-              className="
-                flex min-w-0 flex-col justify-start
-                rounded-[24px] border border-[#D9D9D9] bg-white
-                p-5 sm:rounded-[32px] sm:p-8 xl:rounded-[40px] xl:p-10
-                transition-all duration-300 ease-out cursor-pointer
-                hover:-translate-y-6 hover:border hover:border-[#D9D9D9] hover:shadow-2xl hover:shadow-black/15
-              "
-            >
-              <span
-                className="
-                  mb-4 font-poppins font-normal capitalize
-                  whitespace-nowrap sm:mb-7 xl:mb-8
-                  text-sm sm:text-base
-                "
-                style={{
-                  lineHeight: "100%",
-                  letterSpacing: "0px",
-                  color: "#67003E",
-                }}
-              >
-                {pillar.pillarNumber}
-              </span>
+          {pillars.map((pillar, index) => {
+            const colors = cardColors[index % cardColors.length];
 
-              <h3
+            return (
+              <div
+                key={pillar._id || pillar.pillarNumber}
                 className="
-                  mb-2 font-poppins font-semibold capitalize text-black
-                  break-words [overflow-wrap:anywhere]
-                  sm:mb-3
-                  text-xl sm:text-2xl md:text-[28px] xl:text-[32px]
+                  flex min-w-0 flex-col justify-start
+                  rounded-[24px] border
+                  p-5 sm:rounded-[32px] sm:p-8 xl:rounded-[40px] xl:p-10
+                  transition-all duration-300 ease-out cursor-pointer
+                  hover:-translate-y-6 hover:shadow-2xl hover:shadow-black/15
                 "
                 style={{
-                  lineHeight: "120%",
-                  letterSpacing: "0px",
+                  backgroundColor: colors.background,
+                  borderColor: colors.border,
                 }}
               >
-                {pillar.title}
-              </h3>
+                <span
+                  className="
+                    mb-4 font-poppins font-normal capitalize
+                    whitespace-nowrap sm:mb-7 xl:mb-8
+                    text-sm sm:text-base
+                  "
+                  style={{
+                    lineHeight: "100%",
+                    letterSpacing: "0px",
+                    color: "#67003E",
+                  }}
+                >
+                  {pillar.pillarNumber}
+                </span>
 
-              <p
-                className="
-                  font-poppins font-normal capitalize
-                  break-words [overflow-wrap:anywhere]
-                  text-sm sm:text-base md:text-lg
-                "
-                style={{
-                  lineHeight: "130%",
-                  letterSpacing: "0px",
-                  color: "#686868",
-                }}
-              >
-                {pillar.description}
-              </p>
-            </div>
-          ))}
+                <h3
+                  className="
+                    mb-2 font-poppins font-semibold capitalize text-black
+                    break-words [overflow-wrap:anywhere]
+                    sm:mb-3
+                    text-xl sm:text-2xl md:text-[28px] xl:text-[32px]
+                  "
+                  style={{
+                    lineHeight: "120%",
+                    letterSpacing: "0px",
+                  }}
+                >
+                  {pillar.title}
+                </h3>
+
+                <p
+                  className="
+                    font-poppins font-normal capitalize
+                    break-words [overflow-wrap:anywhere]
+                    text-sm sm:text-base md:text-lg
+                  "
+                  style={{
+                    lineHeight: "130%",
+                    letterSpacing: "0px",
+                    color: "#686868",
+                  }}
+                >
+                  {pillar.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
