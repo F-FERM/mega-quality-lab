@@ -319,7 +319,7 @@ function GeotechnicalHero() {
                   key={service}
                   type="button"
                   className="
-                    group flex items-center justify-center rounded-[40px] border-2 hover:border-4 border-[#BABABA]
+                    group flex items-center justify-center rounded-[40px] border hover:border-4 border-white
                     text-center transition-all duration-300
                     hover:border-[#FC0198] 
                     w-full h-[52px] px-5 gap-[10px]
@@ -329,7 +329,7 @@ function GeotechnicalHero() {
                   <span
                     className="
                       whitespace-nowrap font-poppins text-sm sm:text-[20px] font-normal capitalize
-                      leading-none text-[#BABABA] transition-all duration-300
+                      leading-none text-white transition-all duration-300
                       group-hover:text-[#FC0198]
                     "
                   >

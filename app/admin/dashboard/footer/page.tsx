@@ -9,14 +9,12 @@ import {
   FileText,
   Globe,
   ImageIcon,
-  ImagePlus,
   Layers,
   Link as LinkIcon,
   Loader2,
   Pencil,
   Plus,
   Trash2,
-  Type,
   UploadCloud,
   X,
 } from "lucide-react";
@@ -91,6 +89,14 @@ interface FooterData {
   phoneLabel: string;
   phoneNumber: string;
   phoneInlineLinks: InlineLink[];
+  // WhatsApp (optional: older records won't have them)
+  whatsappNumberLabel?: string;
+  whatsappLabel?: string;
+  whatasappLabel?: string; // old misspelled field, read only
+  whatsappNumber?: string;
+  whatsappNumberTwo?: string;
+  whatsappNumberThree?: string;
+  whatsappInlineLinks?: InlineLink[];
   socialTitle: string;
   socialLinks: SocialLink[];
   copyrightText: string;
@@ -115,6 +121,11 @@ interface FooterPayload {
   phoneLabel: string;
   phoneNumber: string;
   phoneInlineLinks: InlineLink[];
+  whatsappNumberLabel: string;
+  whatsappNumber: string;
+  whatsappNumberTwo: string;
+  whatsappNumberThree: string;
+  whatsappInlineLinks: InlineLink[];
   socialTitle: string;
   socialLinks: SocialLink[];
   copyrightText: string;
@@ -129,35 +140,6 @@ const LINK_TYPES = [
   { value: "external", label: "External", icon: Globe },
 ] as const;
 
-const EMPTY_NAV_LINK: NavLink = {
-  label: "",
-  url: "",
-  order: 0,
-  inlineLinks: [],
-};
-
-const EMPTY_SERVICE_LINK: ServiceLink = {
-  label: "",
-  url: "",
-  order: 0,
-  inlineLinks: [],
-};
-
-const EMPTY_ADDRESS: Address = {
-  location: "",
-  address: "",
-  order: 0,
-  inlineLinks: [],
-};
-
-const EMPTY_SOCIAL_LINK: SocialLink = {
-  platform: "",
-  url: "",
-  icon: "",
-  order: 0,
-  inlineLinks: [],
-};
-
 const EMPTY_FORM: FooterPayload = {
   brandName: "",
   brandLogo: "",
@@ -171,6 +153,11 @@ const EMPTY_FORM: FooterPayload = {
   phoneLabel: "",
   phoneNumber: "",
   phoneInlineLinks: [],
+  whatsappNumberLabel: "WHATSAPP",
+  whatsappNumber: "",
+  whatsappNumberTwo: "",
+  whatsappNumberThree: "",
+  whatsappInlineLinks: [],
   socialTitle: "",
   socialLinks: [],
   copyrightText: "",
@@ -262,6 +249,12 @@ function mapEntryToForm(entry: FooterData): FooterPayload {
     phoneLabel: entry.phoneLabel || "",
     phoneNumber: entry.phoneNumber || "",
     phoneInlineLinks: entry.phoneInlineLinks || [],
+    whatsappNumberLabel:
+      entry.whatsappNumberLabel || entry.whatsappLabel || entry.whatasappLabel || "WHATSAPP",
+    whatsappNumber: entry.whatsappNumber || "",
+    whatsappNumberTwo: entry.whatsappNumberTwo || "",
+    whatsappNumberThree: entry.whatsappNumberThree || "",
+    whatsappInlineLinks: entry.whatsappInlineLinks || [],
     socialTitle: entry.socialTitle || "",
     socialLinks: [...(entry.socialLinks || [])]
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
@@ -1032,7 +1025,7 @@ function SocialLinkManager({
                     type="button"
                     variant="outline"
                     onClick={() => startEdit(idx)}
-                    className="h-7 px-2 text-[10px] border-[#D4B8A8] text-[#67003E] hover:bg-[#F8F0F5]"
+                    className="h-7 border-[#D4B8A8] px-2 text-[10px] text-[#67003E] hover:bg-[#F8F0F5]"
                   >
                     <Pencil className="h-3 w-3" />
                   </Button>
@@ -1040,13 +1033,13 @@ function SocialLinkManager({
                     type="button"
                     variant="outline"
                     onClick={() => removeLink(idx)}
-                    className="h-7 px-2 text-[10px] border-[#F3D0D0] text-[#DC2626] hover:bg-[#FEF2F2]"
+                    className="h-7 border-[#F3D0D0] px-2 text-[10px] text-[#DC2626] hover:bg-[#FEF2F2]"
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>
               </div>
-              
+
               {/* Inline Links for this social link */}
               {(link.inlineLinks?.length ?? 0) > 0 && (
                 <div className="mt-1 flex flex-wrap gap-1">
@@ -1066,7 +1059,7 @@ function SocialLinkManager({
                   </span>
                 </div>
               )}
-              
+
               {/* Inline Link Manager for this social link */}
               <div className="mt-1">
                 <InlineLinkManager
@@ -1295,6 +1288,11 @@ export default function FooterAdminPage() {
       phoneLabel: form.phoneLabel,
       phoneNumber: form.phoneNumber,
       phoneInlineLinks: form.phoneInlineLinks,
+      whatasappLabel: form.whatsappNumberLabel,
+      whatsappNumber: form.whatsappNumber,
+      whatsappNumberTwo: form.whatsappNumberTwo,
+      whatsappNumberThree: form.whatsappNumberThree,
+      whatsappInlineLinks: form.whatsappInlineLinks,
       socialTitle: form.socialTitle,
       socialLinks: form.socialLinks.map(serializeSocialLink),
       copyrightText: form.copyrightText,
@@ -1392,7 +1390,7 @@ export default function FooterAdminPage() {
             Footer
           </h1>
           <p className="mt-[6px] text-[13px] leading-[1.6] text-[#666666] sm:text-[14px] lg:text-[15px]">
-            Manage the footer content including navigation, services, addresses, social links with icons, and copyright.
+            Manage the footer content including navigation, services, addresses, phone, WhatsApp, social links with icons, and copyright.
           </p>
         </div>
 
@@ -1474,9 +1472,18 @@ export default function FooterAdminPage() {
                     <span>•</span>
                     <span>{entry.socialLinks?.length || 0} Social Links</span>
                   </div>
-                  <p className="mt-[4px] text-[13px] text-[#666666] line-clamp-1">
+                  <p className="mt-[4px] line-clamp-1 text-[13px] text-[#666666]">
                     {entry.phoneLabel}: {entry.phoneNumber}
                   </p>
+                  {entry.whatsappNumber && (
+                    <p className="mt-[2px] line-clamp-1 text-[13px] text-[#666666]">
+                      {entry.whatsappNumberLabel ||
+                        entry.whatsappLabel ||
+                        entry.whatasappLabel ||
+                        "WhatsApp"}
+                      : {entry.whatsappNumber}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -1537,7 +1544,7 @@ export default function FooterAdminPage() {
               <div className="mt-[18px] space-y-[14px] sm:mt-[22px] sm:space-y-[16px]">
                 {/* BRAND SECTION */}
                 <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
-                  <h3 className="text-[14px] font-semibold text-[#111111] sm:text-[15px] mb-3">
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#111111] sm:text-[15px]">
                     Brand
                   </h3>
 
@@ -1645,7 +1652,7 @@ export default function FooterAdminPage() {
 
                 {/* PHONE SECTION */}
                 <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
-                  <h3 className="text-[14px] font-semibold text-[#111111] sm:text-[15px] mb-3">
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#111111] sm:text-[15px]">
                     Phone
                   </h3>
 
@@ -1672,6 +1679,48 @@ export default function FooterAdminPage() {
                   />
                 </div>
 
+                {/* WHATSAPP SECTION */}
+                <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#111111] sm:text-[15px]">
+                    WhatsApp
+                  </h3>
+
+                  <FormField
+                    label="WhatsApp Label"
+                    value={form.whatsappNumberLabel}
+                    onChange={(value) => setForm({ ...form, whatsappNumberLabel: value })}
+                    placeholder="WHATSAPP"
+                  />
+
+                  <div className="mt-3 grid grid-cols-1 gap-[10px] xs:grid-cols-3">
+                    <FormField
+                      label="WhatsApp Number"
+                      value={form.whatsappNumber}
+                      onChange={(value) => setForm({ ...form, whatsappNumber: value })}
+                      placeholder="+971 50 900 5399"
+                    />
+                    <FormField
+                      label="WhatsApp Number 2"
+                      value={form.whatsappNumberTwo}
+                      onChange={(value) => setForm({ ...form, whatsappNumberTwo: value })}
+                      placeholder="+971 50 222 0131"
+                    />
+                    <FormField
+                      label="WhatsApp Number 3"
+                      value={form.whatsappNumberThree}
+                      onChange={(value) => setForm({ ...form, whatsappNumberThree: value })}
+                      placeholder="Optional"
+                    />
+                  </div>
+
+                  <InlineLinkManager
+                    links={form.whatsappInlineLinks}
+                    onChange={(links) => setForm({ ...form, whatsappInlineLinks: links })}
+                    label="WhatsApp Inline Links"
+                    description="Link each number to its chat, e.g. https://wa.me/971509005399 (use External + new tab)."
+                  />
+                </div>
+
                 {/* SOCIAL LINKS */}
                 <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
                   <FormField
@@ -1688,7 +1737,7 @@ export default function FooterAdminPage() {
 
                 {/* COPYRIGHT SECTION */}
                 <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
-                  <h3 className="text-[14px] font-semibold text-[#111111] sm:text-[15px] mb-3">
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#111111] sm:text-[15px]">
                     Copyright
                   </h3>
 

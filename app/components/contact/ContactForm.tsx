@@ -423,11 +423,14 @@ function ProjectEnquirySection() {
   };
 
   // Format location display
-  const formattedLocations = locationCards.map((card) => ({
-    index: `${card.number} / ${card.title}`,
-    title: card.title,
-    address: card.address,
-  }));
+const HARDCODED_LABELS = ["01/DUBAI", "02/RAK", "03/CALL"];
+
+const formattedLocations = locationCards.map((card, i) => ({
+  key: card._id ?? `${i}-${card.title}`,
+  index: HARDCODED_LABELS[i] ?? `${String(i + 1).padStart(2, "0")}/${card.title}`,
+  title: card.title,
+  address: card.address,
+}));
 
   return (
     <section className="w-full bg-[#FFCEEBB2] px-4 py-12 sm:px-6 sm:py-16 lg:px-10">
