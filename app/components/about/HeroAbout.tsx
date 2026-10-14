@@ -225,7 +225,7 @@ function AboutLabSecondary() {
             className="mb-4 w-full max-w-[722px] font-poppins font-bold text-black md:mb-6"
             style={{
               fontSize: "clamp(32px, 4vw + 12px, 70px)",
-              lineHeight: "1.15",
+              lineHeight: "1.25",
               letterSpacing: "-0.02em",
             }}
           >
