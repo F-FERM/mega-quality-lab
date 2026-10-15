@@ -38,17 +38,17 @@ function Navbar() {
                    2xl:min-h-[115px] 2xl:px-20"
       >
         {/* Logo section */}
-        <a href="#home" className="flex shrink-0 items-center gap-1">
-          <Image
-            src={LOGO}
-            alt="Mega Quality Lab"
-            width={315}
-            height={60}
-            priority
-            className="h-9 w-auto sm:h-10 md:h-12 xl:h-14 2xl:h-[60px]"
-            style={{ objectFit: "contain" }}
-          />
-        </a>
+     <Link href="/" className="flex shrink-0 items-center gap-1">
+  <Image
+    src={LOGO}
+    alt="Mega Quality Lab"
+    width={537}
+    height={89}
+    priority
+    className="h-auto w-[180px] sm:w-[240px] md:w-[300px] lg:w-[360px] xl:w-[420px] 2xl:w-[537px]"
+    style={{ objectFit: "contain" }}
+  />
+</Link>
 
         {/* Nav links: only from xl, once there's real room for all 6 + logo + button */}
         <ul className="hidden shrink-0 items-center gap-5 xl:flex 2xl:gap-10">
