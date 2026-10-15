@@ -62,6 +62,21 @@ interface EHSCategory {
   inlineLinks?: InlineLink[];
 }
 
+interface TitleSegment {
+  text: string;
+  highlight: boolean;
+}
+
+interface ManagementMember {
+  _id?: string;
+  name: string;
+  image: string;
+  title?: string;
+  description?: string;
+  order: number;
+  isActive: boolean;
+}
+
 interface QualityEHSData {
   _id?: string;
   qualityTitle: string;
@@ -72,6 +87,11 @@ interface QualityEHSData {
   ehsDescription: string;
   ehsInlineLinks: InlineLink[];
   ehsCategories: EHSCategory[];
+  managementLabel?: string;
+  managementTitle?: TitleSegment[];
+  managementDescription?: string;
+  managementMembers?: ManagementMember[];
+  managementInlineLinks?: InlineLink[];
   isActive: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -87,6 +107,11 @@ interface QualityEHSPayload {
   ehsDescription: string;
   ehsInlineLinks: InlineLink[];
   ehsCategories: EHSCategory[];
+  managementLabel: string;
+  managementTitle: TitleSegment[];
+  managementDescription: string;
+  managementMembers: ManagementMember[];
+  managementInlineLinks: InlineLink[];
   isActive: boolean;
 }
 
@@ -114,6 +139,21 @@ const EMPTY_EHS_CATEGORY: EHSCategory = {
   inlineLinks: [],
 };
 
+const EMPTY_MEMBER: ManagementMember = {
+  name: "",
+  image: "",
+  title: "",
+  description: "",
+  order: 0,
+  isActive: true,
+};
+
+const DEFAULT_MANAGEMENT_TITLE: TitleSegment[] = [
+  { text: "EXPERIENCED", highlight: false },
+  { text: "PEOPLE", highlight: true },
+  { text: ". RELIABLE RESULTS.", highlight: false },
+];
+
 const EMPTY_FORM: QualityEHSPayload = {
   qualityTitle: "",
   qualityDescription: "",
@@ -123,6 +163,11 @@ const EMPTY_FORM: QualityEHSPayload = {
   ehsDescription: "",
   ehsInlineLinks: [],
   ehsCategories: [],
+  managementLabel: "Management",
+  managementTitle: DEFAULT_MANAGEMENT_TITLE,
+  managementDescription: "",
+  managementMembers: [],
+  managementInlineLinks: [],
   isActive: true,
 };
 
@@ -132,6 +177,25 @@ function resolveImage(path: string): string {
   if (!path) return "";
   if (path.startsWith("http")) return path;
   return `${IMAGE_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+// "/image" is the placeholder currently stored in the API
+function hasRealImage(path?: string): boolean {
+  return Boolean(path) && path !== "/image";
+}
+
+// Works whether fileUpload returns a string or an object
+function extractUploadedPath(result: unknown): string {
+  if (typeof result === "string") return result;
+  if (result && typeof result === "object") {
+    const r = result as Record<string, unknown>;
+    const candidates = [r.url, r.path, r.fileUrl, r.location, r.filePath, r.image];
+    for (const c of candidates) {
+      if (typeof c === "string" && c) return c;
+    }
+    if (r.data) return extractUploadedPath(r.data);
+  }
+  return "";
 }
 
 function getLinkTypeIcon(type: string) {
@@ -187,6 +251,21 @@ function mapEntryToForm(entry: QualityEHSData): QualityEHSPayload {
     ehsCategories: [...(entry.ehsCategories || [])]
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       .map((category) => ({ ...category, inlineLinks: category.inlineLinks || [] })),
+    managementLabel: entry.managementLabel || "Management",
+    managementTitle:
+      entry.managementTitle && entry.managementTitle.length > 0
+        ? entry.managementTitle.map((seg) => ({ text: seg.text, highlight: Boolean(seg.highlight) }))
+        : DEFAULT_MANAGEMENT_TITLE,
+    managementDescription: entry.managementDescription || "",
+    managementMembers: [...(entry.managementMembers || [])]
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      .map((member) => ({
+        ...member,
+        title: member.title || "",
+        description: member.description || "",
+        isActive: member.isActive ?? true,
+      })),
+    managementInlineLinks: entry.managementInlineLinks || [],
     isActive: entry.isActive ?? true,
   };
 }
@@ -199,6 +278,11 @@ function serializePillar(pillar: Pillar): Omit<Pillar, "_id"> {
 function serializeEHSCategory(category: EHSCategory): Omit<EHSCategory, "_id"> {
   const { _id: _unused, ...rest } = category;
   return { ...rest, inlineLinks: rest.inlineLinks || [] };
+}
+
+function serializeMember(member: ManagementMember): Omit<ManagementMember, "_id"> {
+  const { _id: _unused, ...rest } = member;
+  return rest;
 }
 
 // ================= REUSABLE FORM FIELD =================
@@ -389,6 +473,193 @@ function InlineLinkManager({
   );
 }
 
+// ================= TITLE SEGMENT EDITOR =================
+
+function TitleSegmentEditor({
+  segments,
+  onChange,
+}: {
+  segments: TitleSegment[];
+  onChange: (segments: TitleSegment[]) => void;
+}) {
+  const updateSegment = (index: number, patch: Partial<TitleSegment>) => {
+    onChange(segments.map((seg, i) => (i === index ? { ...seg, ...patch } : seg)));
+  };
+
+  const removeSegment = (index: number) => {
+    onChange(segments.filter((_, i) => i !== index));
+  };
+
+  const addSegment = () => {
+    onChange([...segments, { text: "", highlight: false }]);
+  };
+
+  return (
+    <div className="mt-3">
+      <Label className="mb-[8px] flex items-center gap-[6px] text-[13px] font-medium text-[#2A2A2A]">
+        <Type className="h-[13px] w-[13px] text-[#67003E]" />
+        Management Title
+      </Label>
+      <p className="mb-2 text-[10px] text-[#888888]">
+        Split the heading into parts. Turn on Highlight for the part that should appear in pink.
+      </p>
+
+      {/* Live preview */}
+      <div className="mb-2 rounded-[10px] border border-dashed border-[#D4B8A8] bg-[#F8F0F5] px-3 py-2 text-[14px] font-bold uppercase text-[#111111]">
+        {segments.length === 0 && (
+          <span className="text-[12px] font-normal normal-case text-[#888888]">Preview appears here</span>
+        )}
+        {segments.map((seg, i) => {
+          const needsSpace = i > 0 && !/^[.,!?;:]/.test(seg.text);
+          return (
+            <span key={i}>
+              {needsSpace ? " " : ""}
+              <span className={seg.highlight ? "text-[#FFA7DC]" : undefined}>{seg.text}</span>
+            </span>
+          );
+        })}
+      </div>
+
+      <div className="space-y-2">
+        {segments.map((seg, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <Input
+              value={seg.text}
+              onChange={(e) => updateSegment(index, { text: e.target.value })}
+              placeholder="Text"
+              className="h-9 flex-1 rounded-[8px] border-[#E4E4E4] bg-white text-xs"
+            />
+            <div className="flex shrink-0 items-center gap-1">
+              <Switch
+                checked={seg.highlight}
+                onCheckedChange={(checked) => updateSegment(index, { highlight: checked })}
+                className="h-4 w-7"
+              />
+              <span className="text-[10px] text-[#666666]">Highlight</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => removeSegment(index)}
+              className="shrink-0 text-[#DC2626] hover:text-[#b91c1c]"
+              aria-label={`Remove part ${index + 1}`}
+            >
+              <X className="h-[14px] w-[14px]" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        onClick={addSegment}
+        className="mt-2 h-[34px] gap-[6px] rounded-[8px] border-[#D4B8A8] px-[10px] text-[12px] text-[#67003E] hover:bg-[#F8F0F5] hover:text-[#67003E]"
+      >
+        <Plus className="h-[12px] w-[12px]" />
+        Add part
+      </Button>
+    </div>
+  );
+}
+
+// ================= MEMBER IMAGE UPLOADER =================
+
+function MemberImageUploader({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (path: string) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please choose an image file");
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const result = await fileUpload(file);
+      const path = extractUploadedPath(result);
+      if (!path) {
+        toast.error("Upload finished but no file path was returned");
+        return;
+      }
+      onChange(path);
+      toast.success("Image uploaded");
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Failed to upload image"));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const showImage = hasRealImage(value);
+
+  return (
+    <div>
+      <Label className="mb-[8px] block text-[12px] font-medium text-[#2A2A2A]">Photo</Label>
+      <div className="flex items-center gap-3">
+        <div className="relative flex h-[84px] w-[64px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] border border-[#E4E4E4] bg-white">
+          {showImage ? (
+            <Image
+              src={resolveImage(value)}
+              alt="Member photo preview"
+              fill
+              sizes="64px"
+              className="object-cover"
+              unoptimized
+            />
+          ) : (
+            <ImagePlus className="h-[20px] w-[20px] text-[#67003E]/40" />
+          )}
+          {uploading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/70">
+              <Loader2 className="h-[18px] w-[18px] animate-spin text-[#67003E]" />
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFile}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            disabled={uploading}
+            onClick={() => inputRef.current?.click()}
+            className="h-[34px] gap-[6px] rounded-[8px] border-[#D4B8A8] px-[10px] text-[12px] text-[#67003E] hover:bg-[#F8F0F5] hover:text-[#67003E]"
+          >
+            <UploadCloud className="h-[13px] w-[13px]" />
+            {showImage ? "Replace photo" : "Upload photo"}
+          </Button>
+          {showImage && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="text-left text-[11px] text-[#DC2626] hover:underline"
+            >
+              Remove photo
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ================= MAIN PAGE =================
 
 export default function QualityEHSAdminPage() {
@@ -411,6 +682,10 @@ export default function QualityEHSAdminPage() {
   const [showEHSCategoryForm, setShowEHSCategoryForm] = useState(false);
   const [ehsCategoryDraft, setEhsCategoryDraft] = useState<EHSCategory>(EMPTY_EHS_CATEGORY);
   const [editingEHSCategoryIndex, setEditingEHSCategoryIndex] = useState<number | null>(null);
+
+  const [showMemberForm, setShowMemberForm] = useState(false);
+  const [memberDraft, setMemberDraft] = useState<ManagementMember>(EMPTY_MEMBER);
+  const [editingMemberIndex, setEditingMemberIndex] = useState<number | null>(null);
 
   // ---------- LOAD ----------
 
@@ -455,6 +730,9 @@ export default function QualityEHSAdminPage() {
     setShowEHSCategoryForm(false);
     setEditingEHSCategoryIndex(null);
     setEhsCategoryDraft(EMPTY_EHS_CATEGORY);
+    setShowMemberForm(false);
+    setEditingMemberIndex(null);
+    setMemberDraft(EMPTY_MEMBER);
   };
 
   // ---------- PILLARS ----------
@@ -580,6 +858,56 @@ export default function QualityEHSAdminPage() {
     setEhsCategoryDraft((prev) => ({ ...prev, inlineLinks: links }));
   };
 
+  // ---------- MANAGEMENT MEMBERS ----------
+
+  const openAddMember = () => {
+    setMemberDraft({ ...EMPTY_MEMBER, order: form.managementMembers.length });
+    setEditingMemberIndex(null);
+    setShowMemberForm(true);
+  };
+
+  const openEditMember = (index: number) => {
+    setMemberDraft({ ...form.managementMembers[index] });
+    setEditingMemberIndex(index);
+    setShowMemberForm(true);
+  };
+
+  const cancelMemberForm = () => {
+    setShowMemberForm(false);
+    setEditingMemberIndex(null);
+    setMemberDraft(EMPTY_MEMBER);
+  };
+
+  const saveMemberDraft = () => {
+    if (!memberDraft.name.trim()) {
+      toast.error("Member name is required");
+      return;
+    }
+
+    setForm((prev) => {
+      const members = [...prev.managementMembers];
+      if (editingMemberIndex !== null) {
+        members[editingMemberIndex] = memberDraft;
+      } else {
+        members.push(memberDraft);
+      }
+      return {
+        ...prev,
+        managementMembers: members.map((member, index) => ({ ...member, order: index })),
+      };
+    });
+    cancelMemberForm();
+  };
+
+  const removeMember = (index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      managementMembers: prev.managementMembers
+        .filter((_, i) => i !== index)
+        .map((member, i) => ({ ...member, order: i })),
+    }));
+  };
+
   // ---------- CREATE / UPDATE ----------
 
   const handleSubmit = async () => {
@@ -592,17 +920,22 @@ export default function QualityEHSAdminPage() {
       return;
     }
 
+    // Drop empty title parts so the website never renders blank segments
+    const cleanTitle = form.managementTitle.filter((seg) => seg.text.trim() !== "");
+
     const payload: QualityEHSPayload = {
       ...form,
       pillars: form.pillars.map(serializePillar),
       ehsCategories: form.ehsCategories.map(serializeEHSCategory),
+      managementTitle: cleanTitle,
+      managementMembers: form.managementMembers.map(serializeMember),
     };
 
     try {
       setSubmitting(true);
 
       if (editingId) {
-        await api.patch(`${ENDPOINT}/${editingId}`, payload);
+        await api.patch(`${ENDPOINT}`, payload);
         toast.success("Quality & EHS section updated");
       } else {
         await api.post(ENDPOINT, payload);
@@ -687,10 +1020,10 @@ export default function QualityEHSAdminPage() {
       <div className="mx-auto flex max-w-[1600px] flex-col gap-[16px] sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-[22px] font-semibold tracking-[-0.5px] text-[#111111] xs:text-[24px] sm:text-[28px] lg:text-[32px]">
-            Quality & EHS
+            Quality, EHS & Management
           </h1>
           <p className="mt-[6px] text-[13px] leading-[1.6] text-[#666666] sm:text-[14px] lg:text-[15px]">
-            Manage Quality pillars and EHS categories.
+            Manage Quality pillars, EHS categories and management team members.
           </p>
         </div>
 
@@ -699,7 +1032,7 @@ export default function QualityEHSAdminPage() {
           className="flex h-[46px] w-full items-center justify-center gap-[8px] rounded-[14px] bg-[#67003E] text-[14px] font-medium text-white hover:bg-[#4F0030] hover:shadow-[0_14px_30px_rgba(103,0,62,0.3)] sm:h-[48px] sm:w-auto sm:px-[22px] sm:text-[15px]"
         >
           <Plus className="h-[18px] w-[18px]" />
-          Add Quality & EHS Section
+          Add Section
         </Button>
       </div>
 
@@ -714,10 +1047,10 @@ export default function QualityEHSAdminPage() {
             <CardContent className="flex flex-col items-center justify-center gap-[10px] p-[32px] text-center sm:p-[48px]">
               <ImageIcon className="h-[28px] w-[28px] text-[#67003E]/50 sm:h-[32px] sm:w-[32px]" />
               <p className="text-[14px] font-medium text-[#333333] sm:text-[15px]">
-                No Quality & EHS content yet
+                No content yet
               </p>
               <p className="text-[12px] text-[#888888] sm:text-[13px]">
-                Create a section to manage Quality pillars and EHS categories.
+                Create a section to manage Quality pillars, EHS categories and the management team.
               </p>
             </CardContent>
           </Card>
@@ -729,7 +1062,7 @@ export default function QualityEHSAdminPage() {
                 className="group overflow-hidden rounded-[18px] border border-white/60 bg-white/80 shadow-[0_10px_40px_rgba(0,0,0,0.06)] sm:rounded-[22px]"
               >
                 <CardContent className="p-[16px] sm:p-[20px]">
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
                       <h3 className="text-[18px] font-semibold text-[#111111]">
                         {entry.qualityTitle || "Quality & EHS"}
@@ -741,7 +1074,7 @@ export default function QualityEHSAdminPage() {
                     <button
                       onClick={() => toggleActive(entry)}
                       disabled={togglingId === entry._id}
-                      className={`rounded-full px-[10px] py-[5px] text-[11px] font-medium transition-colors ${
+                      className={`shrink-0 rounded-full px-[10px] py-[5px] text-[11px] font-medium transition-colors ${
                         entry.isActive
                           ? "bg-[#67003E]/90 text-white"
                           : "bg-black/40 text-white/80"
@@ -759,6 +1092,8 @@ export default function QualityEHSAdminPage() {
                     <span>{entry.pillars?.length || 0} Quality Pillars</span>
                     <span>•</span>
                     <span>{entry.ehsCategories?.length || 0} EHS Categories</span>
+                    <span>•</span>
+                    <span>{entry.managementMembers?.length || 0} Team Members</span>
                   </div>
 
                   <div className="mt-[14px] flex gap-2">
@@ -805,7 +1140,7 @@ export default function QualityEHSAdminPage() {
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-[18px] font-semibold text-[#111111] xs:text-[20px] sm:text-[24px]">
-                  {editingId ? "Edit Quality & EHS Section" : "Create Quality & EHS Section"}
+                  {editingId ? "Edit Section" : "Create Section"}
                 </h2>
                 <button
                   onClick={closeModal}
@@ -819,7 +1154,7 @@ export default function QualityEHSAdminPage() {
               <div className="mt-[18px] space-y-[14px] sm:mt-[22px] sm:space-y-[16px]">
                 {/* QUALITY SECTION */}
                 <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
-                  <h3 className="text-[14px] font-semibold text-[#111111] sm:text-[15px] mb-3">
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#111111] sm:text-[15px]">
                     Quality Section
                   </h3>
 
@@ -974,7 +1309,7 @@ export default function QualityEHSAdminPage() {
 
                 {/* EHS SECTION */}
                 <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
-                  <h3 className="text-[14px] font-semibold text-[#111111] sm:text-[15px] mb-3">
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#111111] sm:text-[15px]">
                     EHS Section
                   </h3>
 
@@ -1127,6 +1462,191 @@ export default function QualityEHSAdminPage() {
                   </div>
                 </div>
 
+                {/* MANAGEMENT SECTION */}
+                <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#111111] sm:text-[15px]">
+                    Management Section
+                  </h3>
+
+                  <FormField
+                    label="Management Label"
+                    value={form.managementLabel}
+                    onChange={(value) => setForm({ ...form, managementLabel: value })}
+                    placeholder="Management"
+                  />
+
+                  <TitleSegmentEditor
+                    segments={form.managementTitle}
+                    onChange={(segments) => setForm({ ...form, managementTitle: segments })}
+                  />
+
+                  <FormField
+                    label="Management Description (optional)"
+                    value={form.managementDescription}
+                    onChange={(value) => setForm({ ...form, managementDescription: value })}
+                    placeholder="Shown under the heading. Leave empty to hide."
+                    textarea
+                    rows={2}
+                    className="mt-3"
+                  />
+
+                  <InlineLinkManager
+                    links={form.managementInlineLinks}
+                    onChange={(links) => setForm({ ...form, managementInlineLinks: links })}
+                    label="Management Inline Links"
+                    description="Text within the management section that will become clickable."
+                  />
+                </div>
+
+                {/* MANAGEMENT MEMBERS */}
+                <div className="rounded-[14px] border border-[#E4E4E4] p-[14px] sm:p-[16px]">
+                  <div className="flex flex-col gap-[10px] xs:flex-row xs:items-center xs:justify-between">
+                    <h3 className="text-[14px] font-semibold text-[#111111] sm:text-[15px]">
+                      Team Members ({form.managementMembers.length})
+                    </h3>
+                    <Button
+                      type="button"
+                      onClick={openAddMember}
+                      className="h-[38px] w-full gap-[6px] rounded-[10px] bg-[#67003E] text-[13px] font-medium text-white hover:bg-[#4F0030] xs:w-auto"
+                    >
+                      <Plus className="h-[14px] w-[14px]" />
+                      Add Member
+                    </Button>
+                  </div>
+
+                  {showMemberForm && (
+                    <div className="mt-[12px] space-y-[10px] rounded-[12px] border border-[#D4B8A8] bg-[#F8F0F5] p-[12px]">
+                      <h4 className="text-[13px] font-semibold text-[#111111]">
+                        {editingMemberIndex !== null ? "Edit Member" : "New Member"}
+                      </h4>
+
+                      <MemberImageUploader
+                        value={memberDraft.image}
+                        onChange={(path) => setMemberDraft((prev) => ({ ...prev, image: path }))}
+                      />
+
+                      <div className="grid grid-cols-1 gap-[10px] xs:grid-cols-2">
+                        <Input
+                          value={memberDraft.name}
+                          onChange={(e) => setMemberDraft((prev) => ({ ...prev, name: e.target.value }))}
+                          placeholder="Full name"
+                          className="h-[44px] rounded-[10px] border-[#E4E4E4] bg-white text-[13px]"
+                        />
+                        <Input
+                          value={memberDraft.title || ""}
+                          onChange={(e) => setMemberDraft((prev) => ({ ...prev, title: e.target.value }))}
+                          placeholder="Job title (e.g. CEO & Founder)"
+                          className="h-[44px] rounded-[10px] border-[#E4E4E4] bg-white text-[13px]"
+                        />
+                      </div>
+
+                      <Textarea
+                        value={memberDraft.description || ""}
+                        onChange={(e) => setMemberDraft((prev) => ({ ...prev, description: e.target.value }))}
+                        placeholder="Short description shown on hover"
+                        rows={2}
+                        className="rounded-[10px] border-[#E4E4E4] bg-white text-[13px]"
+                      />
+
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          checked={memberDraft.isActive}
+                          onCheckedChange={(checked) => setMemberDraft((prev) => ({ ...prev, isActive: checked }))}
+                        />
+                        <span className="text-[12px] text-[#666666]">Show on website</span>
+                      </div>
+
+                      <div className="flex flex-col gap-[8px] xs:flex-row">
+                        <Button
+                          type="button"
+                          onClick={saveMemberDraft}
+                          className="h-[40px] rounded-[10px] bg-[#67003E] text-[13px] font-medium text-white hover:bg-[#4F0030]"
+                        >
+                          {editingMemberIndex !== null ? "Save Member" : "Add Member"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={cancelMemberForm}
+                          className="h-[40px] rounded-[10px] border-[#E4E4E4] bg-white text-[13px] text-[#666666]"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-[12px] space-y-[10px]">
+                    {form.managementMembers.length === 0 && (
+                      <p className="text-[12px] text-[#888888]">
+                        No team members yet. Add your first member above.
+                      </p>
+                    )}
+
+                    {form.managementMembers.map((member, index) => (
+                      <div
+                        key={member._id || `${member.name}-${index}`}
+                        className="flex flex-col gap-[10px] rounded-[12px] border border-[#ECECEC] bg-white p-[12px] sm:flex-row sm:items-center"
+                      >
+                        <div className="relative flex h-[56px] w-[42px] shrink-0 items-center justify-center overflow-hidden rounded-[8px] bg-[#F4F1EA]">
+                          {hasRealImage(member.image) ? (
+                            <Image
+                              src={resolveImage(member.image)}
+                              alt={member.name}
+                              fill
+                              sizes="42px"
+                              className="object-cover"
+                              unoptimized
+                            />
+                          ) : (
+                            <ImageIcon className="h-[16px] w-[16px] text-[#67003E]/40" />
+                          )}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[14px] font-semibold text-[#111111]">
+                            {member.name}
+                            {!member.isActive && (
+                              <span className="ml-2 rounded-full bg-black/10 px-[8px] py-[2px] text-[10px] font-medium text-[#666666]">
+                                Hidden
+                              </span>
+                            )}
+                          </p>
+                          {member.title && (
+                            <p className="text-[11px] font-medium uppercase text-[#67003E]">
+                              {member.title}
+                            </p>
+                          )}
+                          {member.description && (
+                            <p className="text-[12px] text-[#666666] line-clamp-1">
+                              {member.description}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="flex gap-[8px] sm:shrink-0">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => openEditMember(index)}
+                            className="h-[34px] rounded-[8px] border-[#D4B8A8] px-[10px] text-[12px] text-[#67003E] hover:bg-[#F8F0F5] hover:text-[#67003E]"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => removeMember(index)}
+                            className="h-[34px] rounded-[8px] border-[#F3D0D0] px-[10px] text-[12px] text-[#DC2626] hover:bg-[#FEF2F2] hover:text-[#DC2626]"
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* ACTIVE SWITCH */}
                 <div className="flex items-center justify-between rounded-[12px] border border-[#E4E4E4] px-[14px] py-[12px]">
                   <div>
@@ -1194,10 +1714,10 @@ export default function QualityEHSAdminPage() {
               className="w-full max-w-[420px] rounded-[20px] bg-white p-[24px] shadow-[0_30px_80px_rgba(0,0,0,0.25)]"
             >
               <h3 className="text-[18px] font-semibold text-[#111111]">
-                Delete Quality & EHS Section?
+                Delete Section?
               </h3>
               <p className="mt-[8px] text-[13px] leading-[1.6] text-[#666666]">
-                This will remove &quot;{deleteTarget.qualityTitle || "Quality & EHS"}&quot; and all its pillars and categories.
+                This will remove &quot;{deleteTarget.qualityTitle || "Quality & EHS"}&quot; and all its pillars, categories and team members.
               </p>
               <div className="mt-[18px] flex flex-col gap-[10px] xs:flex-row xs:justify-end">
                 <Button

@@ -1,71 +1,66 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import api from "@/lib/axios";
 
-// Types
-interface InlineLink {
-  text: string;
-  url: string;
-  type: string;
-  openInNewTab: boolean;
-  position: number;
-}
-
-interface ProcessStep {
-  _id?: string;
-  stepNumber: string;
-  title: string;
-  order: number;
-  inlineLinks?: InlineLink[];
-}
-
-interface ManagementProcessData {
-  _id?: string;
-  managementTitle: string;
-  managementSubtitle: string;
-  managementSubtitleTwo: string;
-  managementSubtitleThree: string;
-  managementDescription: string;
-  managingDirectorName: string;
-  managingDirectorTitle: string;
-  managingDirectorImage: string;
-  managingDirectorImageAlt: string;
-  managementInlineLinks: InlineLink[];
-  additionalInfo: string;
-  additionalInfoInlineLinks: InlineLink[];
-  processTitle: string;
-  processSubtitle: string;
-  processSteps: ProcessStep[];
-  processInlineLinks: InlineLink[];
-  isActive: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// Import fallback image
 import MANAGER_FALLBACK_IMG from "../../../public/images/equipment3.jpg";
 
-const defaultData: ManagementProcessData = {
-  managementTitle: "Management",
-  managementSubtitle: "EXPERIENCED",
-  managementSubtitleTwo: "PEOPLE.",
-  managementSubtitleThree: "RELIABLE RESULTS.",
-  managementDescription:
-    "Abdullah Mohammad Has Over 10 Years Of Experience In Geotechnical And Materials Testing Laboratory Operations, Including Quality-Control Activities Under ISO 17025:2017 And Management Of Major Projects In Dubai And Abu Dhabi.",
-  managingDirectorName: "ABDULLAH MOHAMMAD",
-  managingDirectorTitle: "MANAGING DIRECTOR",
-  managingDirectorImage: "",
-  managingDirectorImageAlt: "Abdullah Mohammad - Managing Director",
-  managementInlineLinks: [],
-  additionalInfo: "Additional Technical Personnel Profiles Available On Request.",
-  additionalInfoInlineLinks: [],
-  processTitle: "Testing Process",
-  processSubtitle: "FROM FIELD INVESTIGATION TO FINAL REPORT",
-  processSteps: [],
-  processInlineLinks: [],
-  isActive: true,
+// ================= TYPES =================
+
+interface TitleSegment {
+  text: string;
+  highlight: boolean;
+}
+
+interface ManagementMember {
+  _id?: string;
+  name: string;
+  image: string;
+  order: number;
+  isActive?: boolean;
+  title?: string; // not in the API yet, falls back below
+  description?: string; // not in the API yet, falls back below
+}
+
+interface ManagementData {
+  label: string;
+  title: TitleSegment[];
+  description: string;
+  members: ManagementMember[];
+}
+
+// ================= FALLBACKS =================
+
+// The API has no job title / description per member yet, so these are used by position.
+const MEMBER_DETAILS = [
+  {
+    title: "Managing Director",
+    description: "Guiding laboratory operations with a focus on dependable service and quality standards.",
+  },
+  {
+    title: "CEO & Founder",
+    description: "Providing leadership and direction for the laboratory's continued growth and technical excellence.",
+  },
+  {
+    title: "CEO & Founder",
+    description: "Supporting a culture of professional expertise, reliable results and quality-focused service.",
+  },
+];
+
+const defaultData: ManagementData = {
+  label: "Management",
+  title: [
+    { text: "Experienced", highlight: false },
+    { text: "People", highlight: true },
+    { text: ". Reliable Results.", highlight: false },
+  ],
+  description: "",
+  members: [
+    { name: "Abdullah Mohammad", image: "", order: 0 },
+    { name: "Eng. Nasralden Ali Elyas Mohamed", image: "", order: 1 },
+    { name: "Eng. Yousif Mohmmad Adam Sebiel", image: "", order: 2 },
+  ],
 };
 
 const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_URL || "";
@@ -76,177 +71,191 @@ function resolveImage(path: string): string {
   return `${IMAGE_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-function ManagementSectionSkeleton() {
+// ================= MEMBER IMAGE (falls back if missing / broken) =================
+
+function MemberImage({ src, alt }: { src: string; alt: string }) {
+  const [failed, setFailed] = useState(false);
+
+  // "/image" is the placeholder currently stored in the API, so treat it as empty
+  const isPlaceholder = !src || src === "/image";
+  const resolved = isPlaceholder || failed ? "" : resolveImage(src);
+  const finalSrc: string | StaticImageData = resolved || MANAGER_FALLBACK_IMG;
+
+  return (
+    <Image
+      src={finalSrc}
+      alt={alt}
+      fill
+      className="object-cover"
+      sizes="(max-width: 640px) 90vw, (max-width: 1280px) 45vw, 425px"
+      unoptimized={typeof finalSrc === "string"}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+// ================= SKELETON =================
+
+function ManagementSkeleton() {
   return (
     <section className="w-full bg-white px-4 py-12 sm:px-6 sm:py-16 md:py-20 xl:py-28">
-      <div className="mx-auto grid w-full max-w-[1464px] grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(320px,574px)_1fr] lg:gap-6 xl:gap-10">
-        {/* Left - Image Skeleton */}
-        <div className="relative mx-auto w-full max-w-[420px] overflow-hidden rounded-[20px] sm:max-w-[480px] sm:rounded-[24px] lg:max-w-[574px] lg:rounded-[30px]">
-          <div className="aspect-[574/587] w-full bg-gray-200 animate-pulse" />
-          <div className="absolute inset-x-0 bottom-0 bg-[#7D7D7D] px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5">
-            <div className="mb-1 h-3 w-24 animate-pulse rounded bg-gray-300 sm:h-4 sm:w-32" />
-            <div className="h-5 w-36 animate-pulse rounded bg-gray-300 sm:h-6 sm:w-44 md:h-7 md:w-48" />
-          </div>
-        </div>
-
-        {/* Right - Content Skeleton */}
-        <div className="flex w-full flex-col">
-          <div className="mb-3 flex items-center gap-3">
-            <span className="h-px w-8 bg-[#67003E]" />
-            <div className="h-5 w-28 animate-pulse rounded bg-gray-200 sm:h-6 sm:w-32" />
-          </div>
-          <div className="mb-3">
-            <div className="h-8 w-3/4 animate-pulse rounded bg-gray-200 sm:h-10 md:h-12 xl:h-16" />
-            <div className="mt-2 h-8 w-1/2 animate-pulse rounded bg-gray-200 sm:h-10 md:h-12 xl:h-16" />
-          </div>
-          <div className="mb-3 space-y-2">
-            <div className="h-5 w-full animate-pulse rounded bg-gray-200 sm:h-6" />
-            <div className="h-5 w-5/6 animate-pulse rounded bg-gray-200 sm:h-6" />
-            <div className="h-5 w-4/5 animate-pulse rounded bg-gray-200 sm:h-6" />
-          </div>
-          <div className="h-5 w-3/4 animate-pulse rounded bg-gray-200 sm:h-6" />
+      <div className="mx-auto w-full max-w-[1464px]">
+        <div className="mb-3 h-6 w-40 animate-pulse rounded bg-gray-200" />
+        <div className="mb-10 h-24 w-full max-w-[700px] animate-pulse rounded bg-gray-200 lg:mb-14" />
+        <div className="flex flex-wrap justify-center gap-6 xl:justify-between">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="aspect-[425/657] w-full max-w-[425px] animate-pulse rounded-[30px] bg-gray-200" />
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
+// ================= MAIN COMPONENT =================
+
 function ManagementSection() {
-  const [data, setData] = useState<ManagementProcessData>(defaultData);
+  const [data, setData] = useState<ManagementData>(defaultData);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchManagementData = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/home-management-process");
+        const res = await api.get("/home-quality-ehs");
+        const raw = res.data;
 
-        if (res.data && typeof res.data === "object") {
-          let responseData = res.data;
-          if (Array.isArray(responseData) && responseData.length > 0) {
-            responseData = responseData[0];
-          } else if (
-            responseData.managementProcess &&
-            Array.isArray(responseData.managementProcess) &&
-            responseData.managementProcess.length > 0
-          ) {
-            responseData = responseData.managementProcess[0];
-          }
+        let r: any = null;
+        if (Array.isArray(raw) && raw.length > 0) {
+          r = raw.find((item) => item?.isActive) || raw[0];
+        } else if (raw && typeof raw === "object") {
+          r = raw;
+        }
 
-          const sortedSteps = (responseData.processSteps || []).sort(
-            (a: ProcessStep, b: ProcessStep) => (a.order || 0) - (b.order || 0)
-          );
+        if (r) {
+          const members: ManagementMember[] = (Array.isArray(r.managementMembers) ? r.managementMembers : [])
+            .filter((m: ManagementMember) => m.isActive !== false)
+            .sort((a: ManagementMember, b: ManagementMember) => (a.order ?? 0) - (b.order ?? 0));
 
-          const managementData: ManagementProcessData = {
-            _id: responseData._id,
-            managementTitle: responseData.managementTitle || defaultData.managementTitle,
-            managementSubtitle: responseData.managementSubtitle || defaultData.managementSubtitle,
-            managementSubtitleTwo: responseData.managementSubtitleTwo || defaultData.managementSubtitleTwo,
-            managementSubtitleThree: responseData.managementSubtitleThree || defaultData.managementSubtitleThree,
-            managementDescription: responseData.managementDescription || defaultData.managementDescription,
-            managingDirectorName: responseData.managingDirectorName || defaultData.managingDirectorName,
-            managingDirectorTitle: responseData.managingDirectorTitle || defaultData.managingDirectorTitle,
-            managingDirectorImage: responseData.managingDirectorImage || "",
-            managingDirectorImageAlt: responseData.managingDirectorImageAlt || defaultData.managingDirectorImageAlt,
-            managementInlineLinks: responseData.managementInlineLinks || [],
-            additionalInfo: responseData.additionalInfo || defaultData.additionalInfo,
-            additionalInfoInlineLinks: responseData.additionalInfoInlineLinks || [],
-            processTitle: responseData.processTitle || defaultData.processTitle,
-            processSubtitle: responseData.processSubtitle || defaultData.processSubtitle,
-            processSteps: sortedSteps,
-            processInlineLinks: responseData.processInlineLinks || [],
-            isActive: responseData.isActive ?? true,
-          };
-
-          setData(managementData);
+          setData({
+            label: r.managementLabel || defaultData.label,
+            title:
+              Array.isArray(r.managementTitle) && r.managementTitle.length > 0
+                ? r.managementTitle
+                : defaultData.title,
+            description: r.managementDescription || "",
+            members: members.length > 0 ? members : defaultData.members,
+          });
         }
       } catch (err) {
-        console.error("Failed to fetch Management & Process section:", err);
+        console.error("Failed to fetch Management section:", err);
         setData(defaultData);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchManagementData();
+    fetchData();
   }, []);
 
-  if (isLoading) {
-    return <ManagementSectionSkeleton />;
-  }
+  if (isLoading) return <ManagementSkeleton />;
 
-  const {
-    managementTitle,
-    managementSubtitle,
-    managementSubtitleTwo,
-    managementSubtitleThree,
-    managementDescription,
-    managingDirectorName,
-    managingDirectorTitle,
-    managingDirectorImage,
-    managingDirectorImageAlt,
-    additionalInfo,
-  } = data;
-
-  const imageSrc = managingDirectorImage ? resolveImage(managingDirectorImage) : MANAGER_FALLBACK_IMG;
+  const { label, title, description, members } = data;
 
   return (
     <section className="w-full bg-white px-4 py-12 sm:px-6 sm:py-16 md:py-20 xl:py-28">
-      <div className="mx-auto grid w-full max-w-[1464px] grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(320px,574px)_1fr] lg:gap-6 xl:gap-10">
-        {/* =====================================================
-            LEFT — Photo card with overlay
-            Responsive: fluid width via aspect-ratio, capped at 574px
-        ====================================================== */}
-        <div className="relative mx-auto w-full max-w-[420px] overflow-hidden rounded-[20px] sm:max-w-[480px] sm:rounded-[24px] lg:max-w-[574px] lg:rounded-[30px]">
-          <div className="relative aspect-[574/587] w-full">
-            <Image
-              src={imageSrc}
-              alt={managingDirectorImageAlt || `${managingDirectorName} - ${managingDirectorTitle}`}
-              fill
-              className="object-cover"
-              sizes="(max-width: 640px) 90vw, (max-width: 1024px) 60vw, 574px"
-              unoptimized={typeof imageSrc === "string" && imageSrc.startsWith("http")}
-            />
-          </div>
-
-          {/* Bottom info bar — pinned flush to the card's bottom edge */}
-          <div className="absolute inset-x-0 bottom-0 bg-[#7D7D7D] px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5">
-            <span className="mb-1 block font-poppins font-medium uppercase text-[#67003E] text-xs tracking-wide sm:text-sm md:text-base lg:text-[18px] leading-none">
-              {managingDirectorTitle}
-            </span>
-            <span className="block font-poppins font-bold uppercase text-white text-lg sm:text-xl md:text-2xl lg:text-[26px] leading-[120%]">
-              {managingDirectorName}
-            </span>
-          </div>
+      <div className="mx-auto w-full max-w-[1464px]">
+        {/* Eyebrow */}
+        <div className="mb-3 flex items-center gap-3">
+          <span className="h-px w-8 bg-[#67003E]" />
+          <span className="font-poppins text-[24px] font-normal capitalize leading-none text-[#67003E]">
+            {label}
+          </span>
         </div>
 
-        {/* =====================================================
-            RIGHT — Content
-        ====================================================== */}
-        <div className="flex w-full flex-col text-center lg:text-left">
-          {/* Eyebrow */}
-          <div className="mb-3 flex items-center justify-center gap-3 lg:justify-start">
-            <span className="h-px w-8 bg-[#67003E]" />
-            <span className="font-poppins font-normal capitalize text-[#67003E] text-lg sm:text-xl md:text-2xl leading-none">
-              {managementTitle}
-            </span>
-          </div>
+        {/* Heading — built from managementTitle segments */}
+     {/* Heading: always breaks before the last segment */}
+<h2
+  className="mb-10 break-words font-poppins font-bold uppercase leading-[120%] text-black lg:mb-14"
+  style={{ fontSize: "clamp(22px, 6.2vw, 60px)" }}
+>
+  {title.map((seg, i) => {
+    const highlightClass = seg.highlight ? "text-[#FFA7DC]" : undefined;
+    const isLast = title.length > 1 && i === title.length - 1;
 
-          {/* Heading */}
-          <h2 className="mb-3 font-poppins font-bold uppercase leading-[112%] text-black text-[28px] sm:text-[36px] md:text-[44px] lg:text-[52px] xl:text-[60px]">
-            {managementSubtitle} <span className="text-[#FFA8D9]">{managementSubtitleTwo}</span>
-            <br />
-            {managementSubtitleThree}
-          </h2>
+    if (isLast) {
+      // ". RELIABLE RESULTS." -> "." stays on line 1, "RELIABLE RESULTS." goes to line 2
+      const match = seg.text.match(/^\s*([.,!?;:]*)\s*([\s\S]*)$/);
+      const punctuation = match?.[1] ?? "";
+      const rest = match?.[2] ?? seg.text;
 
-          {/* Bio paragraph */}
-          <p className="mb-3 font-poppins font-medium capitalize text-[#727272] text-base sm:text-lg md:text-xl leading-[120%]">
-            {managementDescription}
+      return (
+        <span key={i}>
+          {punctuation && <span className={highlightClass}>{punctuation}</span>}
+          <br />
+          <span className={highlightClass}>{rest}</span>
+        </span>
+      );
+    }
+
+    const needsSpace = i > 0 && !/^[.,!?;:]/.test(seg.text);
+    return (
+      <span key={i}>
+        {needsSpace ? " " : ""}
+        <span className={highlightClass}>{seg.text}</span>
+      </span>
+    );
+  })}
+</h2>
+        {description && (
+          <p className="-mt-6 mb-10 max-w-[820px] font-poppins text-[18px] font-medium capitalize leading-[120%] text-[#727272] lg:mb-14">
+            {description}
           </p>
+        )}
 
-          {/* Note */}
-          <p className="font-poppins font-medium capitalize text-[#727272] text-sm sm:text-base md:text-lg leading-[120%]">
-            {additionalInfo}
-          </p>
+        {/* Cards */}
+        <div className="flex flex-wrap justify-center gap-6 xl:justify-between">
+          {members.map((member, i) => {
+            const memberTitle = member.title || MEMBER_DETAILS[i]?.title || "";
+            const memberDescription = member.description || MEMBER_DETAILS[i]?.description || "";
+
+            return (
+              <article
+                key={member._id ?? member.name}
+                tabIndex={0}
+                className="group relative aspect-[425/657] w-full max-w-[425px] overflow-hidden rounded-[30px] outline-none focus-visible:ring-2 focus-visible:ring-[#FC0198]"
+              >
+                <MemberImage src={member.image} alt={`${member.name}${memberTitle ? ` - ${memberTitle}` : ""}`} />
+
+                <div
+                  className="absolute inset-0 flex flex-col justify-end gap-[10px] px-[30px] pb-[30px]"
+                  style={{
+                    background: "linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.82) 100%)",
+                  }}
+                >
+                  {/* Title — on hover */}
+                  {memberTitle && (
+                    <span className="translate-y-2 font-poppins text-[18px] font-medium uppercase leading-[150%] text-[#FC0198] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 motion-reduce:transition-none">
+                      {memberTitle}
+                    </span>
+                  )}
+
+                  {/* Name — always visible */}
+                  <h3 className="font-poppins text-[22px] font-semibold uppercase leading-[130%] text-white sm:text-[28px]">
+                    {member.name}
+                  </h3>
+
+                  {/* Description — on hover */}
+                  {memberDescription && (
+                    <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 group-hover:grid-rows-[1fr] group-focus-visible:grid-rows-[1fr] motion-reduce:transition-none">
+                      <p className="overflow-hidden font-poppins text-[16px] font-normal capitalize leading-[150%] text-[#CFCFCF] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none">
+                        {memberDescription}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

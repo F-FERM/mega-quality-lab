@@ -67,6 +67,9 @@ interface FooterData {
   phoneLabel: string;
   phoneNumber: string;
   phoneInlineLinks: InlineLink[];
+  whatsappLabel: string;
+  whatsappNumbers: string[];
+  whatsappInlineLinks: InlineLink[];
   socialTitle: string;
   socialLinks: SocialLink[];
   copyrightText: string;
@@ -107,6 +110,9 @@ const defaultData: FooterData = {
   phoneLabel: "PHONE",
   phoneNumber: "+971 52 652 3220",
   phoneInlineLinks: [],
+  whatsappLabel: "WHATSAPP",
+  whatsappNumbers: [],
+  whatsappInlineLinks: [],
   socialTitle: "FOLLOW US",
   socialLinks: [
     { platform: "Facebook", url: "#", icon: "", order: 0, inlineLinks: [] },
@@ -137,6 +143,8 @@ const getSocialIcon = (platform: string): any => {
   if (platformLower.includes("twitter") || platformLower.includes("x")) return X_ICON_IMG;
   return FACEBOOK_ICON_IMG; // fallback
 };
+
+const digitsOnly = (value: string) => value.replace(/\D/g, "");
 
 // ================= SKELETON =================
 
@@ -204,6 +212,19 @@ function Footer() {
             phoneLabel: responseData.phoneLabel || defaultData.phoneLabel,
             phoneNumber: responseData.phoneNumber || defaultData.phoneNumber,
             phoneInlineLinks: responseData.phoneInlineLinks || [],
+            // Label: new field first, then older / misspelled names as fallbacks
+            whatsappLabel:
+              responseData.whatsappNumberLabel ||
+              responseData.whatsappNumberlabel ||
+              responseData.whatsappLabel ||
+              responseData.whatasappLabel ||
+              defaultData.whatsappLabel,
+            whatsappNumbers: [
+              responseData.whatsappNumber,
+              responseData.whatsappNumberTwo,
+              responseData.whatsappNumberThree,
+            ].filter(Boolean),
+            whatsappInlineLinks: responseData.whatsappInlineLinks || [],
             socialTitle: responseData.socialTitle || defaultData.socialTitle,
             socialLinks: (responseData.socialLinks || []).sort((a: SocialLink, b: SocialLink) => (a.order ?? 0) - (b.order ?? 0)),
             copyrightText: responseData.copyrightText || defaultData.copyrightText,
@@ -241,6 +262,9 @@ function Footer() {
     addresses,
     phoneLabel,
     phoneNumber,
+    whatsappLabel,
+    whatsappNumbers,
+    whatsappInlineLinks,
     socialTitle,
     socialLinks,
     copyrightText,
@@ -249,13 +273,32 @@ function Footer() {
 
   // Resolve brand logo from API
   const resolvedBrandLogo = brandLogo ? resolveImage(brandLogo) : LOGO_MARK_IMG;
-  const isRemoteBrandLogo = typeof resolvedBrandLogo === 'string' && resolvedBrandLogo.startsWith('http');
+  const isRemoteBrandLogo = typeof resolvedBrandLogo === "string" && resolvedBrandLogo.startsWith("http");
 
   // Prepare social links with icons
   const socialLinksWithIcons = socialLinks.map((link) => ({
     ...link,
     icon: link.icon ? resolveImage(link.icon) : getSocialIcon(link.platform),
   }));
+
+  // WhatsApp items: skip empty / duplicate numbers, use the matching inline link when available
+  const seenNumbers = new Set<string>();
+  const safeWhatsappInlineLinks = whatsappInlineLinks ?? [];
+  const whatsappItems = (whatsappNumbers ?? [])
+    .filter((n) => {
+      const d = digitsOnly(n);
+      if (!d || seenNumbers.has(d)) return false;
+      seenNumbers.add(d);
+      return true;
+    })
+    .map((n) => {
+      const match = safeWhatsappInlineLinks.find((l) => digitsOnly(l.text) === digitsOnly(n));
+      return {
+        number: n,
+        url: match?.url || `https://wa.me/${digitsOnly(n)}`,
+        newTab: match?.openInNewTab ?? true,
+      };
+    });
 
   return (
     <footer className="relative w-full overflow-x-hidden" style={{ backgroundColor: "#270027" }}>
@@ -380,6 +423,7 @@ function Footer() {
                 </div>
               ))}
 
+              {/* Phone */}
               <div className="flex flex-col gap-2">
                 <span
                   className="mb-2 font-poppins font-medium uppercase"
@@ -401,6 +445,39 @@ function Footer() {
                 </a>
               </div>
 
+              {/* WhatsApp */}
+              {whatsappItems.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <span
+                    className="mb-2 font-poppins font-medium uppercase"
+                    style={{
+                      fontSize: "clamp(14px, 0.8vw + 10px, 16px)",
+                      lineHeight: "100%",
+                      letterSpacing: "0%",
+                      color: "#AAAAAA",
+                    }}
+                  >
+                    {whatsappLabel}
+                  </span>
+
+                  <div className="flex flex-col gap-3">
+                    {whatsappItems.map((item) => (
+                      <a
+                        key={item.number}
+                        href={item.url}
+                        target={item.newTab ? "_blank" : undefined}
+                        rel={item.newTab ? "noopener noreferrer" : undefined}
+                        className="font-poppins font-normal text-white transition-colors hover:text-[#FFA8D9]"
+                        style={{ fontSize: "clamp(14px, 0.8vw + 10px, 18px)", lineHeight: "100%", fontWeight: "400" }}
+                      >
+                        {item.number}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Social */}
               <div className="flex flex-col gap-3">
                 <span
                   className="mb-2 font-poppins font-medium uppercase"
@@ -429,7 +506,7 @@ function Footer() {
                         width={35}
                         height={35}
                         className="object-contain"
-                        unoptimized={typeof social.icon === 'string' && social.icon.startsWith('http')}
+                        unoptimized={typeof social.icon === "string" && social.icon.startsWith("http")}
                       />
                     </a>
                   ))}
@@ -453,12 +530,12 @@ function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="mb-1 mt-12 sm:mt-16 md:mt-20 h-px w-full bg-white/20" />
+        <div className="mb-1 mt-12 h-px w-full bg-white/20 sm:mt-16 md:mt-20" />
 
         {/* Bottom row */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <span
-            className="font-poppins font-normal uppercase text-center sm:text-left"
+            className="text-center font-poppins font-normal uppercase sm:text-left"
             style={{
               fontSize: "clamp(12px, 0.7vw + 8px, 16px)",
               lineHeight: "100%",
@@ -470,7 +547,7 @@ function Footer() {
           </span>
 
           <span
-            className="font-poppins font-normal uppercase text-center sm:text-right"
+            className="text-center font-poppins font-normal uppercase sm:text-right"
             style={{
               fontSize: "clamp(12px, 0.7vw + 8px, 16px)",
               lineHeight: "100%",

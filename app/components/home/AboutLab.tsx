@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import api from "@/lib/axios";
-import ABOUT_IMG_1 from "../../../public/images/lab1.jpg";
-import ABOUT_IMG_2 from "../../../public/images/lab2.jpg";
+import ABOUT_IMG_1 from "../../../public/images/research.jpg";
+import ABOUT_IMG_2 from "../../../public/images/soil.jpg";
 
 // Types
 interface InlineLink {
