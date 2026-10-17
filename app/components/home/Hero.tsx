@@ -36,145 +36,63 @@ const defaultData: HeroData = {
   exploreServicesButtonLink: "/services",
 };
 
+/*
+  LAYOUT NOTES
+  ------------
+  - Everything is in normal document flow (no translate-y hacks, no
+    absolute inset-0 centering), so the section grows with its content
+    and nothing can overlap on any screen height/width.
+  - The badge sits centered ABOVE the text on every screen below 2xl
+    (this covers phones, tablets, and all MacBooks: 13", 14", 15").
+  - Only at 2xl (1536px+) is there enough room to move the badge to the
+    left of the heading. Its left offset is computed from the viewport
+    center so it can never run into the 858px text column.
+*/
+
+const SECTION_PADDING =
+  "px-4 pb-14 pt-[100px] sm:px-6 sm:pb-16 sm:pt-[110px] md:pb-20 md:pt-[125px] xl:pb-24 xl:pt-[135px] 2xl:min-h-[976px] 2xl:justify-center 2xl:pb-0 2xl:pt-0";
+
+// Shared by the real badge and the skeleton badge so they always match.
+const BADGE_SIZE =
+  "h-[125px] w-[125px] xs:h-[140px] xs:w-[140px] sm:h-[160px] sm:w-[160px] md:h-[180px] md:w-[180px] xl:h-[190px] xl:w-[190px] 2xl:h-[237px] 2xl:w-[237px]";
+
+// In flow + centered below 2xl, absolutely placed to the left at 2xl.
+// 429 = half of the 858px text column, 237 = badge size, 40 = gap.
+const BADGE_POSITION =
+  "relative mb-5 sm:mb-6 xl:mb-8 2xl:absolute 2xl:mb-0 2xl:top-[165px] 2xl:left-[max(24px,min(217px,calc(50%-429px-237px-40px)))]";
+
+// ================= SKELETON =================
+
 function HeroSkeleton() {
   return (
-    <section
-      className="
-        relative w-full overflow-hidden bg-gray-100
-        min-h-[600px]
-        xs:min-h-[640px]
-        sm:min-h-[680px]
-        md:min-h-[760px]
-        lg:min-h-[880px]
-        xl:min-h-[976px]
-      "
-    >
-      {/* Badge skeleton */}
+    <section className="relative w-full overflow-hidden bg-gray-100">
       <div
-        className="
-          absolute z-20 flex items-center justify-center
-
-          h-[65px] w-[65px]
-          top-[90px] left-1/2
-          -translate-x-1/2
-          p-2
-
-          xs:h-[75px] xs:w-[75px]
-          xs:top-[95px]
-
-          sm:h-[90px] sm:w-[90px]
-          sm:top-[105px]
-
-          md:h-[140px] md:w-[140px]
-          md:top-[120px]
-
-          lg:h-[150px] lg:w-[150px]
-          lg:top-[130px]
-          lg:left-1/2
-          lg:-translate-x-1/2
-          lg:p-3.5
-
-          xl:h-[237px] xl:w-[237px]
-          xl:top-[165px]
-          xl:left-[217px]
-          xl:p-4
-        "
+        className={`relative z-10 flex w-full flex-col items-center ${SECTION_PADDING}`}
       >
+        {/* Badge skeleton */}
         <div
-          className="
-            h-full w-full rounded-full
-            border-2 border-dashed
-            border-[#FFD400]/60
-            bg-gray-300/50
-            animate-pulse
-          "
-        />
-      </div>
-
-      <div
-        className="
-          absolute inset-0
-          flex items-center justify-center
-          px-4 sm:px-6
-        "
-      >
-        <div
-          className="
-            flex w-full max-w-[858px]
-            flex-col items-center gap-4
-
-            translate-y-[110px]
-            xs:translate-y-[160px]
-            sm:translate-y-[175px]
-            md:translate-y-[161px]
-            lg:translate-y-[150px]
-            xl:translate-y-0
-          "
+          className={`${BADGE_POSITION} ${BADGE_SIZE} flex items-center justify-center p-2`}
         >
-          <div
-            className="
-              h-9 w-3/4
-              animate-pulse rounded-md bg-gray-300
-              sm:h-12
-              md:h-16
-              xl:h-20
-            "
-          />
+          <div className="h-full w-full animate-pulse rounded-full border-2 border-dashed border-[#FFD400]/60 bg-gray-300/50" />
+        </div>
 
-          <div
-            className="
-              h-9 w-1/2
-              animate-pulse rounded-md bg-gray-300
-              sm:h-12
-              md:h-16
-              xl:h-20
-            "
-          />
+        <div className="flex w-full max-w-[858px] flex-col items-center gap-4">
+          <div className="h-9 w-3/4 animate-pulse rounded-md bg-gray-300 sm:h-12 md:h-14 xl:h-16 2xl:h-20" />
+          <div className="h-9 w-1/2 animate-pulse rounded-md bg-gray-300 sm:h-12 md:h-14 xl:h-16 2xl:h-20" />
+          <div className="mt-4 h-4 w-2/3 animate-pulse rounded-md bg-gray-300 sm:h-5" />
+          <div className="h-4 w-5/6 animate-pulse rounded-md bg-gray-300 sm:h-5" />
 
-          <div
-            className="
-              mt-4 h-4 w-2/3
-              animate-pulse rounded-md bg-gray-300
-              sm:h-5
-            "
-          />
-
-          <div
-            className="
-              h-4 w-5/6
-              animate-pulse rounded-md bg-gray-300
-              sm:h-5
-            "
-          />
-
-          <div
-            className="
-              mt-6 flex w-full
-              flex-col items-center gap-4
-              sm:w-auto sm:flex-row
-            "
-          >
-            <div
-              className="
-                h-12 w-full
-                animate-pulse rounded-md bg-gray-300
-                sm:w-40
-              "
-            />
-
-            <div
-              className="
-                h-12 w-full
-                animate-pulse rounded-md bg-gray-300
-                sm:w-40
-              "
-            />
+          <div className="mt-6 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
+            <div className="h-12 w-full animate-pulse rounded-md bg-gray-300 sm:w-40" />
+            <div className="h-12 w-full animate-pulse rounded-md bg-gray-300 sm:w-40" />
           </div>
         </div>
       </div>
     </section>
   );
 }
+
+// ================= MAIN =================
 
 export default function Hero() {
   const [data, setData] = useState<HeroData>(defaultData);
@@ -189,7 +107,9 @@ export default function Hero() {
         setData({
           ...defaultData,
           ...res.data,
-          heroImage: res.data?.heroImage?.trim() ? res.data.heroImage : defaultData.heroImage,
+          heroImage: res.data?.heroImage?.trim()
+            ? res.data.heroImage
+            : defaultData.heroImage,
         });
       } catch (err) {
         console.error("Failed to fetch hero section:", err);
@@ -220,17 +140,7 @@ export default function Hero() {
   } = data;
 
   return (
-    <section
-      className="
-        relative w-full overflow-hidden
-        min-h-[600px]
-        xs:min-h-[640px]
-        sm:min-h-[680px]
-        md:min-h-[760px]
-        lg:min-h-[880px]
-        xl:min-h-[976px]
-      "
-    >
+    <section className="relative w-full overflow-hidden">
       {/* Background */}
       <Image
         src={heroImage}
@@ -250,167 +160,59 @@ export default function Hero() {
         }}
       />
 
-      {/* =====================================================
-          ACCREDITATION BADGE
-          ===================================================== */}
+      {/* Content wrapper — full width, in flow, positioned so the 2xl
+          badge can anchor to the section edges. */}
       <div
-        className="
-          absolute z-20
-          flex items-center justify-center
-
-          /* Mobile */
-          h-[125px] w-[125px]
-          top-[92px]
-          left-1/2
-          -translate-x-1/2
-          p-2
-
-          /* XS */
-          xs:h-[140px]
-          xs:w-[140px]
-          xs:top-[98px]
-
-          /* SM */
-          sm:h-[160px]
-          sm:w-[160px]
-          sm:top-[100px]
-
-          /* MD */
-          md:h-[185px]
-          md:w-[185px]
-          md:top-[118px]
-
-          /* LG (1024-1279px, e.g. MacBook) - stay centered like MD,
-             do NOT switch to the left-positioned desktop layout yet,
-             there isn't enough horizontal room and it overlaps the heading */
-          lg:h-[190px]
-          lg:w-[190px]
-          lg:top-[130px]
-          lg:left-1/2
-          lg:-translate-x-1/2
-          lg:p-3.5
-
-          /* XL (1280px+) - now there's room, move badge to the left of the heading */
-          xl:h-[237px]
-          xl:w-[237px]
-          xl:top-[165px]
-          xl:left-[217px]
-          xl:translate-x-0
-          xl:p-4
-        "
-     
+        className={`relative z-10 flex w-full flex-col items-center ${SECTION_PADDING}`}
       >
-        <Image
-          src={ACCREDITED_BADGE}
-          alt="EIAC Accredited ISO/IEC 17025:2017"
-          width={198}
-          height={198}
-          priority
-          className="
-            h-full
-            w-full
-            object-contain
-            animate-[spin_18s_linear_infinite]
-          "
-        />
-      </div>
-
-      {/* =====================================================
-          CONTENT
-          ===================================================== */}
-      <div
-        className="
-          absolute inset-0 z-10
-          flex items-center justify-center
-          px-4 sm:px-6
-        "
-      >
+        {/* ACCREDITATION BADGE */}
         <div
-          className="
-            flex w-full max-w-[858px]
-            flex-col items-center
-            text-center
-
-            /* Mobile - push content down below the badge (badge bottom ~217px) */
-            translate-y-[110px]
-
-            /* XS - badge bottom ~238px */
-            xs:translate-y-[160px]
-
-            /* SM - badge bottom ~260px */
-            sm:translate-y-[175px]
-
-            /* MD - badge bottom ~303px */
-            md:translate-y-[161px]
-
-            /* LG (1024-1279px) - badge is now centered above (top-130 + h190,
-               bottom ~320), push content clear of it just like MD/SM do */
-            lg:translate-y-[150px]
-
-            /* XL - badge is out of the way (left-positioned), no push needed */
-            xl:translate-y-0
-
-            gap-3
-            sm:gap-4
-            md:gap-5
-            xl:gap-6
-          "
+          className={`${BADGE_POSITION} ${BADGE_SIZE} z-20 flex items-center justify-center p-2 xl:p-3 2xl:p-4`}
         >
+          <Image
+            src={ACCREDITED_BADGE}
+            alt="EIAC Accredited ISO/IEC 17025:2017"
+            width={198}
+            height={198}
+            priority
+            className="h-full w-full animate-[spin_18s_linear_infinite] object-contain"
+          />
+        </div>
+
+        {/* TEXT COLUMN */}
+        <div className="flex w-full max-w-[858px] flex-col items-center gap-3 text-center sm:gap-4 md:gap-5 2xl:gap-6">
           {/* Main heading */}
           <h1
             className="
-              text-white
-              uppercase
-              font-poppins
-              font-bold
-              text-center
-
-              text-[26px]
-              leading-[112%]
-
+              text-center font-poppins font-bold uppercase
+              text-[26px] leading-[112%] text-white
               xs:text-[30px]
               sm:text-[38px]
               md:text-[48px]
-              lg:text-[60px]
-              xl:text-[80px]
+              lg:text-[54px]
+              xl:text-[64px]
+              2xl:text-[80px]
             "
-            style={{
-              letterSpacing: "0px",
-              maxWidth: "858px",
-            }}
+            style={{ letterSpacing: "0px", maxWidth: "858px" }}
           >
             {heroTitleOne}.
             <br />
-
-            <span style={{ color: "#FFA7DC" }}>
-              {heroTitleTwo.trim()}
-            </span>
-
+            <span style={{ color: "#FFA7DC" }}>{heroTitleTwo.trim()}</span>
             <br />
-
             {heroTitleThree}
           </h1>
 
           {/* First description */}
           <p
             className="
-              text-white
-              font-poppins
-              font-medium
-              capitalize
-              text-center
-
-              text-sm
-              leading-[120%]
-
+              text-center font-poppins font-medium capitalize
+              text-sm leading-[120%] text-white
               xs:text-base
               sm:text-lg
               md:text-xl
-              xl:text-[22px]
+              2xl:text-[22px]
             "
-            style={{
-              letterSpacing: "0px",
-            }}
+            style={{ letterSpacing: "0px" }}
           >
             {heroDescription}
           </p>
@@ -418,17 +220,11 @@ export default function Hero() {
           {/* Second description */}
           <p
             className="
-              font-poppins
-              font-normal
-              capitalize
-              text-center
-
-              text-xs
-              leading-[120%]
-
+              text-center font-poppins font-normal capitalize
+              text-xs leading-[120%]
               xs:text-sm
               sm:text-base
-              xl:text-[18px]
+              2xl:text-[18px]
             "
             style={{
               letterSpacing: "0px",
@@ -440,23 +236,8 @@ export default function Hero() {
           </p>
 
           {/* Buttons */}
-          <div
-            className="
-              flex w-full
-              flex-col items-center
-              gap-3
-
-              xs:gap-4
-
-              sm:w-auto
-              sm:flex-row
-              sm:justify-center
-            "
-          >
-            <Link
-              href={requestTestButtonLink}
-              className="w-full sm:w-auto"
-            >
+          <div className="flex w-full flex-col items-center gap-3 xs:gap-4 sm:w-auto sm:flex-row sm:justify-center">
+            <Link href={requestTestButtonLink} className="w-full sm:w-auto">
               <Button
                 type="button"
                 variant="navbarCta"
@@ -466,10 +247,7 @@ export default function Hero() {
               </Button>
             </Link>
 
-            <Link
-              href={exploreServicesButtonLink}
-              className="w-full sm:w-auto"
-            >
+            <Link href={exploreServicesButtonLink} className="w-full sm:w-auto">
               <Button
                 type="button"
                 variant="heroCta"

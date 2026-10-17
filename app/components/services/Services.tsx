@@ -106,6 +106,14 @@ function resolveImage(path: string): string {
   return `${IMAGE_BASE_URL}${trimmed.startsWith("/") ? trimmed : `/${trimmed}`}`;
 }
 
+/* Cards grid shared by the skeleton and the real cards.
+   Column gap is unchanged (gap-x-6); the row gap between card rows is larger. */
+const CARDS_GRID_CLASSES = `
+  grid grid-cols-1 gap-x-6 gap-y-10
+  sm:grid-cols-2 sm:gap-y-12
+  lg:grid-cols-3 lg:gap-y-16
+`;
+
 function ServiceOverlayCardsSkeleton() {
   return (
     <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
@@ -124,7 +132,7 @@ function ServiceOverlayCardsSkeleton() {
           <div className="mt-2 h-6 w-5/6 animate-pulse rounded bg-gray-200" />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={CARDS_GRID_CLASSES}>
           {[1, 2, 3].map((i) => (
             <div
               key={i}
@@ -220,7 +228,7 @@ function ServiceOverlayCards() {
     <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
       <div className="mx-auto w-full max-w-[1464px]">
         {/* Cards — 470 x 520 spec, flat #00000059 overlay */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={CARDS_GRID_CLASSES}>
           {servicesWithImages.map((service) => (
             <Link
               key={service._id || service.serviceNumber}
