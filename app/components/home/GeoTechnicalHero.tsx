@@ -86,40 +86,55 @@ function resolveImage(path: string): string {
   return `${IMAGE_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+/* Shared by the skeleton and the real hero so they always match.
+   Side padding steps down on MacBook-size screens (xl) and only returns
+   to your original 152px / 408px from 2xl (1536px+). */
+const HERO_MIN_H_CLASSES = `
+  min-h-[420px]
+  sm:min-h-[480px]
+  md:min-h-[540px]
+  lg:min-h-[600px]
+  xl:min-h-[644px]
+`;
+
+const HERO_CONTENT_PADDING_CLASSES = `
+  px-5 py-8
+  sm:px-8 sm:py-10
+  md:px-12 md:py-12
+  lg:px-16 lg:py-14
+  xl:pl-24 xl:pr-32 xl:py-[55px]
+  2xl:pl-[152px] 2xl:pr-[408px]
+`;
+
+/* Service pills: 1 column on mobile, 2 from sm, 3 from xl. */
+const PILLS_GRID_CLASSES = `
+  grid grid-cols-1 gap-3
+  sm:grid-cols-2 sm:gap-4
+  xl:grid-cols-3
+`;
+
 function GeotechnicalSkeleton() {
   return (
     <section className="w-full mb-16 sm:mb-20 md:mb-24 xl:mb-28">
       {/* Hero Skeleton */}
-      <div className="relative w-full overflow-hidden">
-        <div className="relative h-[644px] w-full bg-gray-200 animate-pulse" />
+      <div className={`relative w-full overflow-hidden ${HERO_MIN_H_CLASSES}`}>
+        <div className="absolute inset-0 animate-pulse bg-gray-200" />
 
         <div
-          className="absolute inset-0 mx-auto flex w-full max-w-[1920px] items-center"
-          style={{
-            paddingTop: "55px",
-            paddingRight: "612px",
-            paddingBottom: "54px",
-            paddingLeft: "228px",
-          }}
+          className={`relative z-10 mx-auto flex w-full max-w-[1920px] items-center min-h-[inherit] ${HERO_CONTENT_PADDING_CLASSES}`}
         >
-          <div
-            className="flex w-full flex-col"
-            style={{
-              maxWidth: "1080px",
-              gap: "15px",
-            }}
-          >
+          <div className="flex w-full max-w-[1080px] flex-col gap-4">
             <div className="flex items-center gap-3">
-              <span className="h-px w-12 bg-[#67003E]" />
-              <div className="h-6 w-48 animate-pulse rounded bg-gray-300" />
+              <span className="h-px w-10 shrink-0 bg-[#67003E] sm:w-12" />
+              <div className="h-6 w-48 max-w-[60%] animate-pulse rounded bg-gray-300" />
             </div>
             <div className="h-12 w-3/4 animate-pulse rounded bg-gray-300" />
             <div className="h-6 w-5/6 animate-pulse rounded bg-gray-300" />
-            <div className="mt-3 flex flex-wrap gap-4">
+            <div className={`mt-2 sm:mt-3 ${PILLS_GRID_CLASSES}`}>
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="h-[68px] w-[334px] animate-pulse rounded-[40px] bg-gray-300"
+                  className="h-[52px] w-full animate-pulse rounded-[40px] bg-gray-300 sm:h-[60px] xl:h-[68px]"
                 />
               ))}
             </div>
@@ -128,21 +143,13 @@ function GeotechnicalSkeleton() {
       </div>
 
       {/* Process Bar Skeleton */}
-      <div
-        className="w-full bg-[#67003E]"
-        style={{
-          paddingTop: "78px",
-          paddingBottom: "78px",
-          paddingLeft: "16px",
-          paddingRight: "16px",
-        }}
-      >
-        <div className="mx-auto flex w-full max-w-[1756px] flex-wrap items-start justify-between gap-y-10 sm:flex-nowrap">
+      <div className="w-full bg-[#67003E] px-4 py-10 sm:py-12 md:py-16 xl:py-[78px]">
+        <div className="mx-auto flex w-full max-w-[1756px] flex-wrap items-start justify-between gap-y-8 sm:flex-nowrap sm:gap-y-10">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex flex-1 items-center">
+            <div key={i} className="flex min-w-[70px] flex-1 items-center">
               <span className="h-px flex-1 bg-[#FC0198]/20" />
-              <div className="flex flex-col items-center gap-3 px-2">
-                <div className="h-[88px] w-[88px] animate-pulse rounded-full bg-[#FC0198]/20" />
+              <div className="flex flex-col items-center gap-2 px-1 sm:gap-3 sm:px-2">
+                <div className="h-14 w-14 animate-pulse rounded-full bg-[#FC0198]/20 sm:h-16 sm:w-16 md:h-20 md:w-20 xl:h-[88px] xl:w-[88px]" />
                 <div className="h-4 w-16 animate-pulse rounded bg-[#FC0198]/20" />
               </div>
               <span className="h-px flex-1 bg-[#FC0198]/20" />
@@ -231,23 +238,13 @@ function GeotechnicalHero() {
   // Get service titles for display
   const serviceTitles = services.map((service) => service.title);
 
- return (
+  return (
     <section className="w-full mb-16 sm:mb-20 md:mb-24 xl:mb-28">
       {/* =====================================================
           HERO — background image (absolute layer) + content in
-          normal flow. Breakpoint pattern matches AboutLab:
-          base → sm → md → lg → xl, ending at your spec values at xl.
+          normal flow.
       ====================================================== */}
-      <div
-        className="
-          relative w-full overflow-hidden
-          min-h-[420px]
-          sm:min-h-[480px]
-          md:min-h-[540px]
-          lg:min-h-[600px]
-          xl:min-h-[644px]
-        "
-      >
+      <div className={`relative w-full overflow-hidden ${HERO_MIN_H_CLASSES}`}>
         {/* Background image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -257,7 +254,7 @@ function GeotechnicalHero() {
             priority
             className="object-cover"
             sizes="100vw"
-            unoptimized={typeof heroImageSrc === 'string' && heroImageSrc.startsWith('http')}
+            unoptimized={typeof heroImageSrc === "string" && heroImageSrc.startsWith("http")}
           />
           <div
             className="absolute inset-0"
@@ -270,20 +267,12 @@ function GeotechnicalHero() {
 
         {/* Content — normal flow so it can grow taller on small screens */}
         <div
-          className="
-            relative z-10 mx-auto flex w-full max-w-[1920px] items-center
-            px-5 py-8
-            sm:px-8 sm:py-10
-            md:px-12 md:py-12
-            lg:pl-16 lg:pr-24 lg:py-14
-            xl:pl-[152px] xl:pr-[408px] xl:py-[55px]
-            min-h-[inherit]
-          "
+          className={`relative z-10 mx-auto flex w-full max-w-[1920px] items-center min-h-[inherit] ${HERO_CONTENT_PADDING_CLASSES}`}
         >
-          <div className="flex w-full flex-col max-w-[1080px] gap-4">
+          <div className="flex w-full max-w-[1080px] flex-col gap-4">
             {/* Eyebrow */}
             <div className="flex items-center gap-3">
-              <span className="h-px w-10 sm:w-12 bg-[#67003E] shrink-0" />
+              <span className="h-px w-10 shrink-0 bg-[#67003E] sm:w-12" />
               <span
                 className="font-poppins font-normal capitalize text-lg sm:text-xl md:text-2xl"
                 style={{ lineHeight: "100%", letterSpacing: "0px", color: "#67003E" }}
@@ -295,8 +284,8 @@ function GeotechnicalHero() {
             {/* Heading */}
             <h2
               className="
-                font-poppins font-bold uppercase leading-[112%] text-white
-                text-[26px] sm:text-[32px] md:text-[40px] lg:text-[48px] xl:text-[60px]
+                font-poppins font-bold uppercase leading-[112%] text-white break-words
+                text-[26px] sm:text-[32px] md:text-[40px] lg:text-[44px] xl:text-[52px] 2xl:text-[60px]
               "
               style={{ letterSpacing: "0px" }}
             >
@@ -306,31 +295,33 @@ function GeotechnicalHero() {
 
             {/* Sub copy */}
             <p
-              className="font-poppins font-medium capitalize w-full max-w-[870px] text-sm sm:text-base md:text-lg xl:text-[22px]"
+              className="w-full max-w-[870px] font-poppins font-medium capitalize text-sm sm:text-base md:text-lg xl:text-xl 2xl:text-[22px]"
               style={{ lineHeight: "120%", letterSpacing: "0px", color: "#BBBBBB" }}
             >
               {description}
             </p>
 
             {/* Service pills */}
-            <div className="mt-2 sm:mt-3 flex flex-wrap gap-3 sm:gap-4">
+            <div className={`mt-2 sm:mt-3 ${PILLS_GRID_CLASSES}`}>
               {serviceTitles.map((service) => (
                 <button
                   key={service}
                   type="button"
                   className="
-                    group flex items-center justify-center rounded-[40px] border hover:border-4 border-white
-                    text-center transition-all duration-300
-                    hover:border-[#FC0198] 
-                    w-full h-[52px] px-5 gap-[10px]
-                    sm:w-[334px] sm:h-[68px] sm:px-8
+                    group flex w-full min-w-0 items-center justify-center
+                    rounded-[40px] border border-white px-5 py-2 text-center
+                    transition-all duration-300
+                    hover:border-4 hover:border-[#FC0198]
+                    min-h-[52px] sm:min-h-[60px] sm:px-6
+                    xl:min-h-[68px] 2xl:px-8
                   "
                 >
                   <span
                     className="
-                      whitespace-nowrap font-poppins text-sm sm:text-[20px] font-normal capitalize
-                      leading-none text-white transition-all duration-300
+                      font-poppins font-normal capitalize leading-tight text-white
+                      transition-all duration-300
                       group-hover:text-[#FC0198]
+                      text-sm sm:text-base xl:text-[18px] 2xl:text-[20px]
                     "
                   >
                     {service}
@@ -343,7 +334,7 @@ function GeotechnicalHero() {
       </div>
 
       {/* =====================================================
-          PROCESS BAR — same base → sm → md → xl ramp as AboutLab
+          PROCESS BAR
       ====================================================== */}
       <div
         className="

@@ -450,13 +450,15 @@ function WhyMega() {
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
-                  {/* Title: Poppins SemiBold 16px, uppercase */}
+                  {/* Title: Poppins SemiBold 16px, uppercase.
+                      Anchored from the TOP (below the icon + number) so it always
+                      keeps a gap under them, even when the title wraps to 2-3 lines. */}
                   <h3
                     className="absolute font-poppins font-semibold uppercase text-black transition-opacity duration-300 ease-out motion-reduce:transition-none"
                     style={{
                       left: u(34),
                       right: u(30),
-                      bottom: u(45),
+                      top: u(130),
                       fontSize: uMin(16, 10),
                       lineHeight: "120%",
                       letterSpacing: 0,
