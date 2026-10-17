@@ -68,9 +68,29 @@ const defaultData: QualityEHSData = {
   isActive: true,
 };
 
+/* Section side padding shared by the skeleton and the real section.
+   xl (MacBook range) uses 128px instead of 228px so the 3 columns have room;
+   2xl (1536px+) keeps the wide 260px padding. */
+const SECTION_PADDING_CLASSES = `
+  px-4 py-16
+  sm:px-8 sm:py-20
+  md:px-10 md:py-24
+  lg:px-14
+  xl:px-32 xl:py-28
+  2xl:px-[260px]
+`;
+
+/* Pillars grid: always 3 in one row from md up, gaps scale with the screen. */
+const PILLARS_GRID_CLASSES = `
+  grid grid-cols-1 gap-10
+  md:grid-cols-3 md:gap-6
+  lg:gap-8
+  xl:gap-12
+`;
+
 function EhsSectionSkeleton() {
   return (
-    <section className="w-full bg-[#FDE1F0] px-4 py-16 sm:px-8 sm:py-20 md:px-16 md:py-24 lg:px-20 xl:px-[228px] xl:py-28">
+    <section className={`w-full bg-[#FDE1F0] ${SECTION_PADDING_CLASSES}`}>
       <div className="mx-auto flex w-full max-w-[1920px] flex-col gap-2.5">
         {/* Eyebrow Skeleton */}
         <div className="mb-2 flex items-center gap-3">
@@ -90,7 +110,7 @@ function EhsSectionSkeleton() {
         </div>
 
         {/* Pillars Skeleton */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-12">
+        <div className={PILLARS_GRID_CLASSES}>
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex min-w-0 flex-col">
               <div className="mb-6 h-px w-full bg-[#989898]" />
@@ -160,7 +180,7 @@ function EhsSection() {
   const { ehsTitle, ehsDescription, ehsCategories } = data;
 
   return (
-    <section className="w-full overflow-x-hidden bg-[#FDE1F0] px-4 py-16 sm:px-8 sm:py-20 md:px-16 md:py-24 lg:px-20 xl:px-[228px] xl:py-28 2xl:px-[260px]">
+    <section className={`w-full overflow-x-hidden bg-[#FDE1F0] ${SECTION_PADDING_CLASSES}`}>
       <div className="mx-auto flex w-full max-w-[1920px] flex-col gap-2.5">
         {/* Eyebrow */}
         <div className="mb-2 flex items-center gap-3">
@@ -201,8 +221,8 @@ function EhsSection() {
           {ehsDescription}
         </p>
 
-        {/* Three pillars */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-12">
+        {/* Three pillars — always one row from md up */}
+        <div className={PILLARS_GRID_CLASSES}>
           {ehsCategories.map((category) => (
             <div key={category._id || category.category} className="flex min-w-0 flex-col">
               <span className="mb-6 h-px w-full bg-[#989898]" />

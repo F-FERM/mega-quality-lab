@@ -146,15 +146,44 @@ const getSocialIcon = (platform: string): any => {
 
 const digitsOnly = (value: string) => value.replace(/\D/g, "");
 
+/* Top grid shared by the skeleton and the real footer.
+   mobile: 1 column | sm: 2 columns
+   lg: 4 columns (Navigation / Services / Address / Badge)
+   xl+: column widths follow the reference — Navigation 21.7%,
+   Services 32%, Address takes the rest, Badge on the far right. */
+const FOOTER_GRID_CLASSES = `
+  mx-auto grid w-full grid-cols-1 gap-x-6 gap-y-10
+  sm:grid-cols-2
+  lg:grid-cols-[0.7fr_1fr_1.3fr_auto]
+  xl:grid-cols-[21.7%_32%_minmax(0,1fr)_auto] xl:gap-x-0 xl:pl-[14px]
+`;
+
+const FOOTER_GRID_STYLE = { width: "1759px", maxWidth: "100%" } as const;
+
+// Small grey section label (NAVIGATION, SERVICES, PHONE ...)
+const LABEL_STYLE = {
+  fontSize: "clamp(14px, 0.8vw + 10px, 16px)",
+  lineHeight: "100%",
+  letterSpacing: "0%",
+  color: "#AAAAAA",
+} as const;
+
+// White links / numbers (nav, services, phone, whatsapp)
+const LINK_STYLE = {
+  fontSize: "clamp(16px, 1vw + 10px, 22px)",
+  lineHeight: "100%",
+  letterSpacing: "0%",
+} as const;
+
 // ================= SKELETON =================
 
 function FooterSkeleton() {
   return (
     <footer className="relative w-full overflow-x-hidden animate-pulse" style={{ backgroundColor: "#270027" }}>
-      <div className="mx-auto flex w-full max-w-[1920px] flex-col" style={{ paddingTop: "53px", paddingRight: "clamp(20px, 4vw, 81px)", paddingBottom: "1px", paddingLeft: "clamp(20px, 4vw, 80px)" }}>
-        <div className="mx-auto grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ width: "1759px", maxWidth: "100%", gap: "clamp(30px, 4vw, 80px)" }}>
+      <div className="mx-auto flex w-full max-w-[1920px] flex-col" style={{ paddingTop: "44px", paddingRight: "clamp(20px, 4vw, 81px)", paddingBottom: "1px", paddingLeft: "clamp(20px, 4vw, 80px)" }}>
+        <div className={FOOTER_GRID_CLASSES} style={FOOTER_GRID_STYLE}>
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex flex-col">
+            <div key={i} className="flex min-w-0 flex-col">
               <div className="mb-6 h-4 w-24 rounded bg-white/10" />
               <div className="space-y-4">
                 {[1, 2, 3, 4, 5].map((j) => (
@@ -164,10 +193,10 @@ function FooterSkeleton() {
             </div>
           ))}
         </div>
-        <div className="mb-1 mt-20 h-px w-full bg-white/20" />
+        <div className="mb-1 mt-12 h-px w-full bg-white/20 sm:mt-16 md:mt-20 xl:mt-[120px]" />
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="h-4 w-64 rounded bg-white/10" />
-          <div className="h-4 w-80 rounded bg-white/10" />
+          <div className="h-4 w-64 max-w-full rounded bg-white/10" />
+          <div className="h-4 w-80 max-w-full rounded bg-white/10" />
         </div>
         <div className="mx-auto flex w-full flex-wrap items-center justify-center gap-2 px-4" style={{ maxWidth: "1127px", minHeight: "120px", paddingTop: "24px", paddingBottom: "24px" }}>
           <div className="relative h-16 w-16 shrink-0 opacity-40 sm:h-20 sm:w-20 xl:h-28 xl:w-28 rounded-full bg-white/10" />
@@ -305,7 +334,7 @@ function Footer() {
       <div
         className="mx-auto flex w-full max-w-[1920px] flex-col"
         style={{
-          paddingTop: "53px",
+          paddingTop: "44px",
           paddingRight: "clamp(20px, 4vw, 81px)",
           paddingBottom: "1px",
           paddingLeft: "clamp(20px, 4vw, 80px)",
@@ -313,40 +342,20 @@ function Footer() {
         }}
       >
         {/* Top grid */}
-        <div
-          className="mx-auto grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-          style={{
-            width: "1759px",
-            maxWidth: "100%",
-            gap: "clamp(30px, 4vw, 80px)",
-            opacity: 1,
-          }}
-        >
+        <div className={FOOTER_GRID_CLASSES} style={FOOTER_GRID_STYLE}>
           {/* Navigation */}
-          <div className="flex flex-col">
-            <span
-              className="mb-6 font-poppins font-medium uppercase"
-              style={{
-                fontSize: "clamp(14px, 0.8vw + 10px, 16px)",
-                lineHeight: "100%",
-                letterSpacing: "0%",
-                color: "#AAAAAA",
-              }}
-            >
+          <div className="flex min-w-0 flex-col">
+            <span className="mb-6 font-poppins font-medium uppercase" style={LABEL_STYLE}>
               {navigationTitle}
             </span>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5 xl:gap-[23px]">
               {navLinks.map((link) => (
                 <Link
                   key={link._id || link.label}
                   href={link.url}
                   className="font-poppins font-normal text-white transition-colors hover:text-[#FFA8D9]"
-                  style={{
-                    fontSize: "clamp(16px, 1vw + 10px, 22px)",
-                    lineHeight: "100%",
-                    letterSpacing: "0%",
-                  }}
+                  style={LINK_STYLE}
                 >
                   {link.label}
                 </Link>
@@ -355,30 +364,18 @@ function Footer() {
           </div>
 
           {/* Services */}
-          <div className="flex flex-col">
-            <span
-              className="mb-6 font-poppins font-medium uppercase"
-              style={{
-                fontSize: "clamp(14px, 0.8vw + 10px, 16px)",
-                lineHeight: "100%",
-                letterSpacing: "0%",
-                color: "#AAAAAA",
-              }}
-            >
+          <div className="flex min-w-0 flex-col">
+            <span className="mb-6 font-poppins font-medium uppercase" style={LABEL_STYLE}>
               {servicesTitle}
             </span>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5 xl:gap-[23px]">
               {serviceLinks.map((link) => (
                 <Link
                   key={link._id || link.label}
                   href={link.url}
                   className="font-poppins font-normal text-white transition-colors hover:text-[#FFA8D9]"
-                  style={{
-                    fontSize: "clamp(16px, 1vw + 10px, 22px)",
-                    lineHeight: "100%",
-                    letterSpacing: "0%",
-                  }}
+                  style={LINK_STYLE}
                 >
                   {link.label}
                 </Link>
@@ -387,24 +384,16 @@ function Footer() {
           </div>
 
           {/* Address */}
-          <div className="flex flex-col">
-            <span
-              className="mb-6 font-poppins font-medium uppercase"
-              style={{
-                fontSize: "clamp(14px, 0.8vw + 10px, 16px)",
-                lineHeight: "100%",
-                letterSpacing: "0%",
-                color: "#AAAAAA",
-              }}
-            >
+          <div className="flex min-w-0 flex-col xl:pr-6">
+            <span className="mb-6 font-poppins font-medium uppercase" style={LABEL_STYLE}>
               {addressTitle}
             </span>
 
-            <div className="flex flex-col gap-6 sm:gap-8">
+            <div className="flex flex-col gap-6 sm:gap-8 xl:gap-9">
               {addresses.map((addr) => (
                 <div key={addr._id || addr.location} className="flex flex-col gap-1">
                   <span
-                    className="mb-2 font-poppins font-normal text-white"
+                    className="mb-2 font-poppins font-normal text-white xl:mb-3"
                     style={{ fontSize: "clamp(18px, 1vw + 12px, 22px)", lineHeight: "100%" }}
                   >
                     {addr.location}
@@ -424,54 +413,42 @@ function Footer() {
               ))}
 
               {/* Phone */}
-              <div className="flex flex-col gap-2">
-                <span
-                  className="mb-2 font-poppins font-medium uppercase"
-                  style={{
-                    fontSize: "clamp(14px, 0.8vw + 10px, 16px)",
-                    lineHeight: "100%",
-                    letterSpacing: "0%",
-                    color: "#AAAAAA",
-                  }}
-                >
+              <div className="flex flex-col gap-3 xl:gap-4">
+                <span className="font-poppins font-medium uppercase" style={LABEL_STYLE}>
                   {phoneLabel}
                 </span>
                 <a
                   href={`tel:${phoneNumber.replace(/\s/g, "")}`}
                   className="font-poppins font-normal text-white"
-                  style={{ fontSize: "clamp(14px, 0.8vw + 10px, 18px)", lineHeight: "100%", fontWeight: "400" }}
+                  style={{ ...LINK_STYLE, fontWeight: "400" }}
                 >
                   {phoneNumber}
                 </a>
               </div>
 
-              {/* WhatsApp */}
+              {/* WhatsApp — numbers sit on one line, separated by commas */}
               {whatsappItems.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  <span
-                    className="mb-2 font-poppins font-medium uppercase"
-                    style={{
-                      fontSize: "clamp(14px, 0.8vw + 10px, 16px)",
-                      lineHeight: "100%",
-                      letterSpacing: "0%",
-                      color: "#AAAAAA",
-                    }}
-                  >
+                <div className="flex flex-col gap-3 xl:gap-4">
+                  <span className="font-poppins font-medium uppercase" style={LABEL_STYLE}>
                     {whatsappLabel}
                   </span>
 
-                  <div className="flex flex-col gap-3">
-                    {whatsappItems.map((item) => (
-                      <a
-                        key={item.number}
-                        href={item.url}
-                        target={item.newTab ? "_blank" : undefined}
-                        rel={item.newTab ? "noopener noreferrer" : undefined}
-                        className="font-poppins font-normal text-white transition-colors hover:text-[#FFA8D9]"
-                        style={{ fontSize: "clamp(14px, 0.8vw + 10px, 18px)", lineHeight: "100%", fontWeight: "400" }}
-                      >
-                        {item.number}
-                      </a>
+                  <div
+                    className="flex flex-wrap items-baseline font-poppins font-normal text-white"
+                    style={{ ...LINK_STYLE, lineHeight: "130%", fontWeight: "400" }}
+                  >
+                    {whatsappItems.map((item, idx) => (
+                      <span key={item.number} className="whitespace-nowrap">
+                        <a
+                          href={item.url}
+                          target={item.newTab ? "_blank" : undefined}
+                          rel={item.newTab ? "noopener noreferrer" : undefined}
+                          className="transition-colors hover:text-[#FFA8D9]"
+                        >
+                          {item.number}
+                        </a>
+                        {idx < whatsappItems.length - 1 && <span>,&nbsp;</span>}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -479,18 +456,10 @@ function Footer() {
 
               {/* Social */}
               <div className="flex flex-col gap-3">
-                <span
-                  className="mb-2 font-poppins font-medium uppercase"
-                  style={{
-                    fontSize: "clamp(14px, 0.8vw + 10px, 16px)",
-                    lineHeight: "100%",
-                    letterSpacing: "0%",
-                    color: "#AAAAAA",
-                  }}
-                >
+                <span className="font-poppins font-medium uppercase" style={LABEL_STYLE}>
                   {socialTitle}
                 </span>
-                <div className="flex items-center gap-6 sm:gap-8">
+                <div className="flex items-center gap-5">
                   {socialLinksWithIcons.map((social) => (
                     <a
                       key={social._id || social.platform}
@@ -498,7 +467,7 @@ function Footer() {
                       aria-label={social.platform}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="transition-opacity hover:opacity-80"
+                      className="shrink-0 transition-opacity hover:opacity-80"
                     >
                       <Image
                         src={social.icon}
@@ -517,23 +486,23 @@ function Footer() {
 
           {/* Accredited badge */}
           <div className="flex items-start justify-center lg:justify-end">
-            <div className="relative h-[140px] w-[140px] animate-[spin_18s_linear_infinite] sm:h-[160px] sm:w-[160px] md:h-[186px] md:w-[186px]">
+            <div className="relative h-[140px] w-[140px] shrink-0 animate-[spin_18s_linear_infinite] sm:h-[160px] sm:w-[160px] xl:h-[200px] xl:w-[200px] 2xl:h-[240px] 2xl:w-[240px]">
               <Image
                 src={ACCREDITED_BADGE_IMG}
                 alt="EIAC Accredited ISO/IEC 17025:2017"
                 fill
                 className="object-contain"
-                sizes="186px"
+                sizes="240px"
               />
             </div>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="mb-1 mt-12 h-px w-full bg-white/20 sm:mt-16 md:mt-20" />
+        <div className="mb-1 mt-12 h-px w-full bg-white/20 sm:mt-16 md:mt-20 xl:mt-[120px]" />
 
         {/* Bottom row */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 pt-3 sm:flex-row sm:items-center sm:justify-between">
           <span
             className="text-center font-poppins font-normal uppercase sm:text-left"
             style={{

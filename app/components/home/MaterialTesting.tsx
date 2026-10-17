@@ -107,6 +107,22 @@ function resolveImage(path: string): string {
   return `${IMAGE_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+/* Card grid shared by the skeleton and the real cards.
+   mobile: 1 column | sm–md: 2 columns (a lone last card is centered)
+   lg+: 3 columns in ONE row, cards shrink to fit
+   xl+: cards stop growing at 458px and spread across the row */
+const CARDS_GRID_CLASSES = `
+  grid grid-cols-1 justify-items-center
+  gap-5 sm:grid-cols-2 sm:gap-6
+  lg:grid-cols-3 lg:gap-5
+  xl:grid-cols-[repeat(3,minmax(0,458px))] xl:justify-between xl:gap-6
+`;
+
+// Last card alone on an odd row: center it across 2 columns on sm–md only
+const LAST_CARD_CLASSES = `
+  sm:last:odd:col-span-2 lg:last:odd:col-span-1
+`;
+
 function MaterialTestingSkeleton() {
   return (
     <section className="w-full bg-white px-4 py-16 sm:px-6 sm:py-20 md:py-24 xl:py-28">
@@ -129,19 +145,19 @@ function MaterialTestingSkeleton() {
         </div>
 
         {/* Cards Skeleton */}
-        <div className="flex flex-wrap justify-center gap-6 lg:justify-between">
+        <div className={CARDS_GRID_CLASSES}>
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="relative w-full max-w-[458px] overflow-hidden rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
+              className={`relative w-full max-w-[458px] overflow-hidden rounded-[28px] sm:rounded-[40px] lg:rounded-[36px] xl:rounded-[50px] ${LAST_CARD_CLASSES}`}
               style={{
                 aspectRatio: "458 / 451",
                 boxShadow: "0px 0px 4px 0px #00000040",
               }}
             >
               <div className="absolute inset-0 animate-pulse bg-gray-200" />
-              <div className="relative flex h-full flex-col justify-end gap-2.5 p-6 sm:p-8 md:p-9">
-                <div className="h-[28px] w-[160px] animate-pulse rounded-[23px] bg-gray-300 sm:h-[33px] sm:w-[211px]" />
+              <div className="relative flex h-full flex-col justify-end gap-2.5 p-6 sm:p-8 lg:p-6 xl:p-9">
+                <div className="h-[28px] w-[160px] animate-pulse rounded-[23px] bg-gray-300 sm:h-[33px] sm:w-[211px] lg:w-[150px] xl:w-[211px]" />
                 <div className="h-7 w-3/4 animate-pulse rounded bg-gray-300 sm:h-8" />
                 <div className="h-6 w-full animate-pulse rounded bg-gray-300" />
               </div>
@@ -280,15 +296,16 @@ function MaterialTesting() {
           {equipmentDescription}
         </p>
 
-        {/* Cards */}
-        <div className="flex flex-wrap justify-center gap-5 sm:gap-6 lg:justify-between">
+        {/* Cards — 3 in one row from lg up */}
+        <div className={CARDS_GRID_CLASSES}>
           {equipmentWithImages.map((equipment, index) => (
             <div
               key={equipment._id || index}
-              className="
+              className={`
                 group relative w-full max-w-[458px] overflow-hidden
-                rounded-[28px] sm:rounded-[40px] md:rounded-[50px]
-              "
+                rounded-[28px] sm:rounded-[40px] lg:rounded-[36px] xl:rounded-[50px]
+                ${LAST_CARD_CLASSES}
+              `}
               style={{
                 aspectRatio: "458 / 451",
                 boxShadow: "0px 0px 4px 0px #00000040",
@@ -300,7 +317,7 @@ function MaterialTesting() {
                 alt={equipment.imageAlt || equipment.title}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 45vw, 458px"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 45vw, (max-width: 1536px) 31vw, 458px"
                 unoptimized={
                   typeof equipment.imageSrc === "string" &&
                   equipment.imageSrc.startsWith("http")
@@ -320,53 +337,60 @@ function MaterialTesting() {
               <div className="absolute inset-0 bg-black/0 transition-all duration-300 group-hover:bg-black/50" />
 
               {/* Content */}
-              <div className="relative flex h-full min-w-0 flex-col gap-2.5 p-6 sm:p-8 md:p-9">
+              <div className="relative flex h-full min-w-0 flex-col gap-2.5 p-6 sm:p-8 lg:p-6 xl:p-9">
                 {/* Badge */}
-               {/* Badge */}
-<div
-  className="
-    flex h-[32px] w-fit min-w-[150px] items-center justify-center
-    gap-2 rounded-[23px] bg-[#FFCEEBB2]
-    px-3.5 py-[3px]
-    transition-all duration-300 ease-out
-    sm:h-[36px] sm:min-w-[211px] sm:px-[19px]
-    group-hover:h-[50px] group-hover:w-full group-hover:max-w-full
-    group-hover:rounded-[30px] group-hover:px-5
-    sm:group-hover:h-[60px] sm:group-hover:px-6
-  "
->
-  {/* Dot */}
-  <span
-    className="
-      h-[5px] w-[5px] shrink-0 rounded-full bg-[#FC0198]
-      transition-all duration-300 ease-out
-      sm:h-[6px] sm:w-[6px]
-      group-hover:h-[11px] group-hover:w-[11px]
-      sm:group-hover:h-[14px] sm:group-hover:w-[14px]
-    "
-    aria-hidden="true"
-  />
+                <div
+                  className="
+                    flex h-[32px] w-fit max-w-full min-w-[150px] items-center justify-center
+                    gap-2 rounded-[23px] bg-[#FFCEEBB2]
+                    px-3.5 py-[3px]
+                    transition-all duration-300 ease-out
+                    sm:h-[36px] sm:min-w-[211px] sm:px-[19px]
+                    lg:min-w-[150px] lg:px-3.5
+                    xl:min-w-[211px] xl:px-[19px]
+                    group-hover:h-[50px] group-hover:w-full group-hover:max-w-full
+                    group-hover:rounded-[30px] group-hover:px-5
+                    sm:group-hover:h-[60px] sm:group-hover:px-6
+                    lg:group-hover:h-[46px] lg:group-hover:px-4
+                    xl:group-hover:h-[60px] xl:group-hover:px-6
+                  "
+                >
+                  {/* Dot */}
+                  <span
+                    className="
+                      h-[5px] w-[5px] shrink-0 rounded-full bg-[#FC0198]
+                      transition-all duration-300 ease-out
+                      sm:h-[6px] sm:w-[6px]
+                      group-hover:h-[11px] group-hover:w-[11px]
+                      sm:group-hover:h-[14px] sm:group-hover:w-[14px]
+                      lg:group-hover:h-[10px] lg:group-hover:w-[10px]
+                      xl:group-hover:h-[14px] xl:group-hover:w-[14px]
+                    "
+                    aria-hidden="true"
+                  />
 
-  {/* Text */}
-  <span
-    className="
-      truncate whitespace-nowrap font-poppins font-normal capitalize
-      leading-[1.3] text-[#67003E]
-      transition-all duration-300 ease-out
-      text-sm sm:text-[18px]
-      group-hover:text-lg sm:group-hover:text-[28px]
-    "
-  >
-    {equipment.badgeTitle}
-  </span>
-</div>
+                  {/* Text */}
+                  <span
+                    className="
+                      min-w-0 truncate whitespace-nowrap font-poppins font-normal capitalize
+                      leading-[1.3] text-[#67003E]
+                      transition-all duration-300 ease-out
+                      text-sm sm:text-[18px] lg:text-sm xl:text-[18px]
+                      group-hover:text-lg sm:group-hover:text-[28px]
+                      lg:group-hover:text-xl xl:group-hover:text-[28px]
+                    "
+                  >
+                    {equipment.badgeTitle}
+                  </span>
+                </div>
+
                 {/* Spacer pushes text block to the bottom */}
                 <div className="flex flex-1 min-w-0 flex-col justify-end gap-2 sm:gap-3">
                   <h3
                     className="
                       font-poppins font-semibold capitalize text-white
                       break-words [overflow-wrap:anywhere]
-                      text-xl sm:text-2xl md:text-[26px]
+                      text-xl sm:text-2xl md:text-[26px] lg:text-xl xl:text-[26px]
                     "
                     style={{
                       lineHeight: "120%",
@@ -380,7 +404,7 @@ function MaterialTesting() {
                     className="
                       font-poppins font-normal capitalize
                       break-words [overflow-wrap:anywhere]
-                      text-sm sm:text-base md:text-[18px]
+                      text-sm sm:text-base md:text-[18px] lg:text-sm xl:text-[18px]
                     "
                     style={{
                       lineHeight: "140%",
